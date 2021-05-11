@@ -1,5 +1,113 @@
 # Changelog
 
+## SFML 2.6.0
+
+Also available on the website: https://www.sfml-dev.org/changelog.php#sfml-2.6.0
+
+### General
+
+  * Various CMake enhancements (#1477, #1509, #1561, #1563, #1576, #1624, #1739)
+  * Small documentation changes (#1519, #1608, #1628, #1657, #1658, #1652, #1665, #1697, #1774, #1776)
+  * Various casting fixes (#1499, #1553)
+  * Add unit testing foundation to SFML (#623, #1475)
+  * Changed Doxygen single-line comment format (#1622, #1623)
+  * Add support for GitHub Actions (#1716, #1751)
+  * Add support for NetBSD (#1535, #1723)
+  * Slight increase performance and code refactor (#1732)
+  * Add support for arm64 on macOS (#1749, #1750, #1761)
+  * Use public domain resources for examples (#1627, #1718)
+  * [iOS] Build examples for iOS as well (#1418, #1520, #1522)
+  * [Windows] Properly support Clang on Windows (#1612, #1720, #1784, #1795)
+  * [Windows] Link legacy stdio definitions on newer Visual Studio versions (#1712)
+  * [Windows] Provide additional metadata through resource files (#1419, #1779)
+
+### System
+
+**Bugfixes**
+
+  * [Windows] Fix overflow when using `sf::Clock` for long time (#1765, #1771)
+
+### Window
+
+**Features**
+
+  * Allow creation of a window without an OpenGL context (#1484)
+  * Dynamically load EGL and GLES extensions as is done for desktop GL (#1539, #1577, #1603)
+  * Add support for creating Vulkan window surfaces (#1557)
+  * Implement smoothing for fonts (#1690)
+  * [Linux] Add support for colored cursors in Unix implementation (#1693, #1694)
+  * [Linux] Added support for directional arrow resize cursors on Linux (#1688)
+
+**Bugfixes**
+
+  * Fix `sf::Context::getActiveContext` to stop returning inactive contexts (#1794)
+  * [Linux] Fixed crash with X11 when `$DISPLAY` is not `0.0` (#724, #1504)
+  * [Android] Ensure `setActive(false)` is called before the surface is destroyed in EglContext (#1530, #1531)
+  * [Android] Fixed EGL incorrectly being passed the anti-aliasing level as `EGL_SAMPLE_BUFFERS` instead of `EGL_SAMPLES` (#1533, #1534)
+  * [Linux] Fix OpenGL extensions not loading in a specific Linux VM configuration (#1495, #1543)
+  * [Windows] Fixed potential buffer overrun in Win32 OpenGL error handling (#1245, #1246)
+  * [Windows] Fix no longer hides cursor when hovering title bar (#1569, #1570)
+  * [macOS] Initialise `m_context` correctly in `SFContext` constructors (#1582, #1610)
+  * [Android] Fixed navigation bar not being entirely hidden on Android (#1538, #1554)
+  * [Windows] Make the process to set a DirectInput device's axis mode more conservative (#1634)
+  * [Linux] Fix an issue where the cursor wasn't changed instantaneously (#1686)
+  * [Windows] Fix issue where joystick/controller POV values were not set correctly for DriectInput devices (#1719)
+  * [Android] Fix warning: control may reach end of non-void function (#1713)
+  * [Windows] Fixed Win32 requestFocus in multithreaded environment (#1600)
+  * [Android] Fix issue where `EGL_DEFAULT_DISPLAY` is `NULL` (#1639, #1740)
+  * [macOS] When initializing an OpenGL view with an existing window, call `finishInit` (#1759, #1760)
+  * [macOS] Fix potential crash when changing cursor (#1721, #1736)
+  * [Android] Fixed `SIGSEGV` after pressing back button on Android (#531, #1580)
+  * [Android] Fix issue with `waitEvent` and an OpenGL Context (#1532, #1790)
+
+### Graphics
+
+**Features**
+
+  * Allow re-creation of the shared context as a core context if the user requests a core profile context (#1434, #1443)
+  * Added `getPosition()` and `getSize()` to `sf::Rect` (#1047)
+  * Added `Font::hasGlyph` field (#1644)
+  * Implemented saveToMemory and saveImageToMemory (#988, #1597, #1669)
+  * Update stb_image to 2.26 (#1712)
+  * Add Min and Max blend modes (#1710, #1756)
+  * Support geometry shaders when a OpenGL 3.2+ context is available (#1768, #1769, #1786, #1789)
+
+**Bugfixes**
+
+  * Fixed missing checks for empty vertex arrays when updating the vertex buffers in `sf::Text` (#1558, #1560)
+  * Remove unnecessary `glFlush()` in `sf::Texture` (#1609)
+  * Fixed text rendering artifacts on Radeon cards (#1568)
+  * Force OpenGL states to be reset when RenderTarget detects that a new context has to be tracked (#1625, #1630)
+  * Don't set default Texture Rect of a `sf::Sprite` before the user provided one (#1725)
+  * Added auto hinting compensation to fix too wide gaps between small glyphs (#1745, #1746)
+  * [iOS] Ensure the proper default framebuffer is bound when activating a RenderWindow (#1471, #1487)
+
+### Audio
+
+**Features**
+
+  * Allow explicitly closing `sf::InputSoundFile` (#1516)
+  * Replace use of auto_ptr for future-proofing (#1546)
+  * Adjustable processing interval in `sf::SoundStream` (#1517, #1666)
+  * Fix `sf::Music` sometimes failing to loop after seeking (#1707)
+
+**Bugfixes**
+
+  * Rename FindVorbis -> FindVORBIS, for consistency with exported variables (#1626, #1629)
+  * Fix naming of VORBIS in `SFMLConfigDependencies.cmake.in` (#1636, #1637)
+  * Fixed copy assign operator in `sf::Sound` so it checks for self-assignment (#1744)
+
+### Networking
+
+**Features**
+
+  * Added method to get the current read position of `sf::Packet` (#1382, #1641)
+
+**Bugfixes**
+
+  * Fixed sometimes failing to read floats and doubles from Packet on Android (#1565, #1578)
+
+
 ## SFML 2.5.1
 
 Also available on the website: https://www.sfml-dev.org/changelog.php#sfml-2.5.1
