@@ -110,7 +110,7 @@ public:
     /// \param style %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default);
+    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -118,7 +118,7 @@ public:
     /// \param handle Platform-specific handle of the control
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(WindowHandle handle);
+    virtual void create(WindowHandle handle, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the window and destroy all the attached resources

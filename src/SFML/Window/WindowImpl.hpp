@@ -69,7 +69,7 @@ public:
     /// \return Pointer to the created window (don't forget to delete it)
     ///
     ////////////////////////////////////////////////////////////
-    static WindowImpl* create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings);
+    static WindowImpl* create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new window depending on to the current OS
@@ -79,7 +79,7 @@ public:
     /// \return Pointer to the created window (don't forget to delete it)
     ///
     ////////////////////////////////////////////////////////////
-    static WindowImpl* create(WindowHandle handle);
+    static WindowImpl* create(WindowHandle handle, bool acceptFiles = false);
 
 public:
 

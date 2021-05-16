@@ -28,6 +28,8 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <vector>
+
 #include <SFML/Config.hpp>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -209,6 +211,7 @@ public:
         TouchMoved,             //!< A touch moved (data in event.touch)
         TouchEnded,             //!< A touch event ended (data in event.touch)
         SensorChanged,          //!< A sensor value changed (data in event.sensor)
+        FilesDropped,           //!< Files were dropped into the window (data in event.filesDropped and event.foldersDropped)
 
         Count                   //!< Keep last -- the total number of event types
     };
@@ -217,6 +220,8 @@ public:
     // Member data
     ////////////////////////////////////////////////////////////
     EventType type; //!< Type of the event
+    std::vector<std::string> filesDropped;
+    std::vector<std::string> foldersDropped;
 
     union
     {
@@ -233,6 +238,7 @@ public:
         TouchEvent            touch;             //!< Touch events parameters (Event::TouchBegan, Event::TouchMoved, Event::TouchEnded)
         SensorEvent           sensor;            //!< Sensor event parameters (Event::SensorChanged)
     };
+
 };
 
 } // namespace sf

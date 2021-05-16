@@ -44,6 +44,7 @@
 #include <dbt.h>
 #include <vector>
 #include <cstring>
+#include <atlstr.h>
 
 // MinGW lacks the definition of some Win32 constants
 #ifndef XBUTTON1
@@ -129,7 +130,7 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-WindowImplWin32::WindowImplWin32(WindowHandle handle) :
+WindowImplWin32::WindowImplWin32(WindowHandle handle, bool acceptFiles) :
 m_handle          (handle),
 m_callback        (0),
 m_cursorVisible   (true), // might need to call GetCursorInfo
@@ -162,7 +163,7 @@ m_cursorGrabbed   (false)
 
 
 ////////////////////////////////////////////////////////////
-WindowImplWin32::WindowImplWin32(VideoMode mode, const String& title, Uint32 style, const ContextSettings& /*settings*/) :
+WindowImplWin32::WindowImplWin32(VideoMode mode, const String& title, Uint32 style, const ContextSettings& /*settings*/, bool acceptFiles) :
 m_handle          (NULL),
 m_callback        (0),
 m_cursorVisible   (true), // might need to call GetCursorInfo
@@ -214,7 +215,7 @@ m_cursorGrabbed   (m_fullscreen)
     }
 
     // Create the window
-    m_handle = CreateWindowW(className, title.toWideString().c_str(), win32Style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
+    m_handle = CreateWindowExW(acceptFiles ? WS_EX_ACCEPTFILES : 0L, className, title.toWideString().c_str(), win32Style, left, top, width, height, NULL, NULL, GetModuleHandle(NULL), this);
 
     // Register to receive device interface change notifications (used for joystick connection handling)
     DEV_BROADCAST_DEVICEINTERFACE deviceInterface = {sizeof(DEV_BROADCAST_DEVICEINTERFACE), DBT_DEVTYP_DEVICEINTERFACE, 0, GUID_DEVINTERFACE_HID, 0};
@@ -992,6 +993,50 @@ void WindowImplWin32::processEvent(UINT message, WPARAM wParam, LPARAM lParam)
                     JoystickImpl::updateConnections();
             }
 
+            break;
+        }
+        case WM_DROPFILES:
+        {
+            Event event;
+            event.type = Event::FilesDropped;
+
+            // https://stackoverflow.com/questions/43823771/passing-wparam-into-dragqueryfile-not-compatible //
+            auto const drop_handle{ reinterpret_cast<::HDROP>(wParam) };
+            auto const dropped_files_count
+            {
+                ::DragQueryFileW(drop_handle, 0xFFFFFFFF, nullptr, 0)
+            };
+            ::std::vector< wchar_t > buffer;
+            for (::UINT dropped_file_index{ 0 }; dropped_files_count != dropped_file_index; ++dropped_file_index)
+            {
+                auto const file_path_symbols_count_excluding_terminating_null
+                {
+                    ::DragQueryFileW(drop_handle, dropped_file_index, nullptr, 0)
+                };
+                if (0 < file_path_symbols_count_excluding_terminating_null)
+                {
+                    auto const buffer_size{ file_path_symbols_count_excluding_terminating_null + 1 };
+                    buffer.resize(buffer_size);
+                    auto const copied_symbols_count_excluding_terminating_null
+                    {
+                        ::DragQueryFileW(drop_handle, dropped_file_index, buffer.data(), buffer_size)
+                    };
+                    if (copied_symbols_count_excluding_terminating_null == file_path_symbols_count_excluding_terminating_null)
+                    {
+                        buffer.back() = L'\0'; // just in case....
+                        // buffer now contains file path...
+
+                        std::string pathString = CW2A(buffer.data());
+                        if (!(GetFileAttributes(buffer.data()) & FILE_ATTRIBUTE_DIRECTORY)) // is not a folder
+                            event.filesDropped.push_back(pathString);
+                        else
+                            event.foldersDropped.push_back(pathString);
+                    }
+                }
+            }
+            //-----------------------------------------------------------------------------------------------//
+
+            pushEvent(event);
             break;
         }
     }

@@ -44,20 +44,20 @@ m_frameTimeLimit(Time::Zero)
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings) :
+Window::Window(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles) :
 m_context       (NULL),
 m_frameTimeLimit(Time::Zero)
 {
-    Window::create(mode, title, style, settings);
+    Window::create(mode, title, style, settings, acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(WindowHandle handle, const ContextSettings& settings) :
+Window::Window(WindowHandle handle, const ContextSettings& settings, bool acceptFiles) :
 m_context       (NULL),
 m_frameTimeLimit(Time::Zero)
 {
-    Window::create(handle, settings);
+    Window::create(handle, settings, acceptFiles);
 }
 
 
@@ -69,14 +69,14 @@ Window::~Window()
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, Uint32 style)
+void Window::create(VideoMode mode, const String& title, Uint32 style, bool acceptFiles)
 {
-    Window::create(mode, title, style, ContextSettings());
+    Window::create(mode, title, style, ContextSettings(), acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
+void Window::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles)
 {
     // Destroy the previous window implementation
     close();
@@ -116,7 +116,7 @@ void Window::create(VideoMode mode, const String& title, Uint32 style, const Con
     #endif
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(mode, title, style, settings);
+    m_impl = priv::WindowImpl::create(mode, title, style, settings, acceptFiles);
 
     // Recreate the context
     m_context = priv::GlContext::create(settings, m_impl, mode.bitsPerPixel);
@@ -127,20 +127,20 @@ void Window::create(VideoMode mode, const String& title, Uint32 style, const Con
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(WindowHandle handle)
+void Window::create(WindowHandle handle, bool acceptFiles)
 {
-    Window::create(handle, ContextSettings());
+    Window::create(handle, ContextSettings(), acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(WindowHandle handle, const ContextSettings& settings)
+void Window::create(WindowHandle handle, const ContextSettings& settings, bool acceptFiles)
 {
     // Destroy the previous window implementation
     close();
 
     // Recreate the window implementation
-    WindowBase::create(handle);
+    WindowBase::create(handle, acceptFiles);
 
     // Recreate the context
     m_context = priv::GlContext::create(settings, m_impl, VideoMode::getDesktopMode().bitsPerPixel);

@@ -78,7 +78,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    Window(VideoMode mode, const String& title, Uint32 style = Style::Default, const ContextSettings& settings = ContextSettings());
+    Window(VideoMode mode, const String& title, Uint32 style = Style::Default, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -94,7 +94,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    explicit Window(WindowHandle handle, const ContextSettings& settings = ContextSettings());
+    explicit Window(WindowHandle handle, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
@@ -116,7 +116,7 @@ public:
     /// \param style    %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default);
+    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window
@@ -135,7 +135,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings);
+    virtual void create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -147,7 +147,7 @@ public:
     /// \param handle   Platform-specific handle of the control
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(WindowHandle handle);
+    virtual void create(WindowHandle handle, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -164,7 +164,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(WindowHandle handle, const ContextSettings& settings);
+    virtual void create(WindowHandle handle, const ContextSettings& settings, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the window and destroy all the attached resources

@@ -74,7 +74,7 @@ WindowBase::~WindowBase()
 
 
 ////////////////////////////////////////////////////////////
-void WindowBase::create(VideoMode mode, const String& title, Uint32 style)
+void WindowBase::create(VideoMode mode, const String& title, Uint32 style, bool acceptFiles)
 {
     // Destroy the previous window implementation
     close();
@@ -114,7 +114,7 @@ void WindowBase::create(VideoMode mode, const String& title, Uint32 style)
     #endif
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(mode, title, style, ContextSettings(0, 0, 0, 0, 0, 0xFFFFFFFF, false));
+    m_impl = priv::WindowImpl::create(mode, title, style, ContextSettings(0, 0, 0, 0, 0, 0xFFFFFFFF, false), acceptFiles);
 
     // Perform common initializations
     initialize();
@@ -122,13 +122,13 @@ void WindowBase::create(VideoMode mode, const String& title, Uint32 style)
 
 
 ////////////////////////////////////////////////////////////
-void WindowBase::create(WindowHandle handle)
+void WindowBase::create(WindowHandle handle, bool acceptFiles)
 {
     // Destroy the previous window implementation
     close();
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(handle);
+    m_impl = priv::WindowImpl::create(handle, acceptFiles);
 
     // Perform common initializations
     initialize();
