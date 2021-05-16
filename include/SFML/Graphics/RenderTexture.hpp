@@ -178,6 +178,12 @@ public:
     ////////////////////////////////////////////////////////////
     bool generateMipmap();
 
+    template<class... Args>
+    void drawWithMipmap(Args&&... args) {
+        draw(std::forward<Args>(args)...);
+        generateMipmap();
+    }
+
     ////////////////////////////////////////////////////////////
     /// \brief Activate or deactivate the render-texture for rendering
     ///
