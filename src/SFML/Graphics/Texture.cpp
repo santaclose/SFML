@@ -239,7 +239,7 @@ bool Texture::loadFromStream(InputStream& stream, const IntRect& area)
 
 
 ////////////////////////////////////////////////////////////
-bool Texture::loadFromImage(const Image& image, const IntRect& area)
+bool Texture::loadFromImage(const Image& image, const IntRect& area, bool generateMipmap)
 {
     // Retrieve the image size
     int width = static_cast<int>(image.getSize().x);
@@ -303,6 +303,9 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area)
             return false;
         }
     }
+
+    if (generateMipmap)
+        this->generateMipmap();
 }
 
 
