@@ -30,7 +30,7 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/Export.hpp>
 #include <SFML/System/String.hpp>
-
+#include <SFML/Graphics/Image.hpp>
 
 namespace sf
 {
@@ -70,6 +70,8 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     static void setString(const String& text);
+
+    static void setImage(unsigned int width, unsigned int height, const void* pointer);
 };
 
 } // namespace sf
