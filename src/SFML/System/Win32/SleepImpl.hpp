@@ -44,6 +44,8 @@ namespace priv
 ////////////////////////////////////////////////////////////
 void sleepImpl(Time time);
 
+void sleepUntilEventImpl();
+
 } // namespace priv
 
 } // namespace sf

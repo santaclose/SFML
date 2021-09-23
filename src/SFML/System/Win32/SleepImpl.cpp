@@ -50,6 +50,11 @@ void sleepImpl(Time time)
     timeEndPeriod(tc.wPeriodMin);
 }
 
+void sleepUntilEventImpl()
+{
+    WaitMessage();
+}
+
 } // namespace priv
 
 } // namespace sf
