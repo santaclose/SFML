@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,8 +29,11 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Network/Export.hpp>
-#include <SFML/Network/Socket.hpp>
+
 #include <SFML/Network/IpAddress.hpp>
+#include <SFML/Network/Socket.hpp>
+
+#include <optional>
 #include <vector>
 
 
@@ -45,7 +48,6 @@ class Packet;
 class SFML_NETWORK_API UdpSocket : public Socket
 {
 public:
-
     ////////////////////////////////////////////////////////////
     // Constants
     ////////////////////////////////////////////////////////////
@@ -96,7 +98,7 @@ public:
     /// \see unbind, getLocalPort
     ///
     ////////////////////////////////////////////////////////////
-    Status bind(unsigned short port, const IpAddress& address = IpAddress::Any);
+    [[nodiscard]] Status bind(unsigned short port, const IpAddress& address = IpAddress::Any);
 
     ////////////////////////////////////////////////////////////
     /// \brief Unbind the socket from the local port to which it is bound
@@ -129,7 +131,7 @@ public:
     /// \see receive
     ///
     ////////////////////////////////////////////////////////////
-    Status send(const void* data, std::size_t size, const IpAddress& remoteAddress, unsigned short remotePort);
+    [[nodiscard]] Status send(const void* data, std::size_t size, const IpAddress& remoteAddress, unsigned short remotePort);
 
     ////////////////////////////////////////////////////////////
     /// \brief Receive raw data from a remote peer
@@ -152,7 +154,11 @@ public:
     /// \see send
     ///
     ////////////////////////////////////////////////////////////
-    Status receive(void* data, std::size_t size, std::size_t& received, IpAddress& remoteAddress, unsigned short& remotePort);
+    [[nodiscard]] Status receive(void*                     data,
+                                 std::size_t               size,
+                                 std::size_t&              received,
+                                 std::optional<IpAddress>& remoteAddress,
+                                 unsigned short&           remotePort);
 
     ////////////////////////////////////////////////////////////
     /// \brief Send a formatted packet of data to a remote peer
@@ -170,7 +176,7 @@ public:
     /// \see receive
     ///
     ////////////////////////////////////////////////////////////
-    Status send(Packet& packet, const IpAddress& remoteAddress, unsigned short remotePort);
+    [[nodiscard]] Status send(Packet& packet, const IpAddress& remoteAddress, unsigned short remotePort);
 
     ////////////////////////////////////////////////////////////
     /// \brief Receive a formatted packet of data from a remote peer
@@ -187,10 +193,9 @@ public:
     /// \see send
     ///
     ////////////////////////////////////////////////////////////
-    Status receive(Packet& packet, IpAddress& remoteAddress, unsigned short& remotePort);
+    [[nodiscard]] Status receive(Packet& packet, std::optional<IpAddress>& remoteAddress, unsigned short& remotePort);
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
@@ -263,10 +268,10 @@ private:
 /// // Receive an answer (most likely from 192.168.1.50, but could be anyone else)
 /// char buffer[1024];
 /// std::size_t received = 0;
-/// sf::IpAddress sender;
+/// std::optional<sf::IpAddress> sender;
 /// unsigned short port;
-/// socket.receive(buffer, sizeof(buffer), received, sender, port);
-/// std::cout << sender.ToString() << " said: " << buffer << std::endl;
+/// if (socket.receive(buffer, sizeof(buffer), received, sender, port) == sf::Socket::Status::Done)
+///     std::cout << sender->toString() << " said: " << buffer << std::endl;
 ///
 /// // ----- The server -----
 ///
@@ -277,10 +282,10 @@ private:
 /// // Receive a message from anyone
 /// char buffer[1024];
 /// std::size_t received = 0;
-/// sf::IpAddress sender;
+/// std::optional<sf::IpAddress> sender;
 /// unsigned short port;
-/// socket.receive(buffer, sizeof(buffer), received, sender, port);
-/// std::cout << sender.ToString() << " said: " << buffer << std::endl;
+/// if (socket.receive(buffer, sizeof(buffer), received, sender, port) == sf::Socket::Status::Done)
+///     std::cout << sender->toString() << " said: " << buffer << std::endl;
 ///
 /// // Send an answer
 /// std::string message = "Welcome " + sender.toString();

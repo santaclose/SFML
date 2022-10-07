@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,8 +29,9 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Network/Export.hpp>
+
 #include <SFML/Network/SocketHandle.hpp>
-#include <SFML/System/NonCopyable.hpp>
+
 #include <vector>
 
 
@@ -42,15 +43,14 @@ class SocketSelector;
 /// \brief Base class for all the socket types
 ///
 ////////////////////////////////////////////////////////////
-class SFML_NETWORK_API Socket : NonCopyable
+class SFML_NETWORK_API Socket
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Status codes that may be returned by socket functions
     ///
     ////////////////////////////////////////////////////////////
-    enum Status
+    enum class Status
     {
         Done,         //!< The socket has sent / received the data
         NotReady,     //!< The socket is not ready to send / receive data yet
@@ -69,12 +69,23 @@ public:
     };
 
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
     ///
     ////////////////////////////////////////////////////////////
     virtual ~Socket();
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Deleted copy constructor
+    ///
+    ////////////////////////////////////////////////////////////
+    Socket(const Socket&) = delete;
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Deleted copy assignment
+    ///
+    ////////////////////////////////////////////////////////////
+    Socket& operator=(const Socket&) = delete;
 
     ////////////////////////////////////////////////////////////
     /// \brief Set the blocking state of the socket
@@ -106,12 +117,11 @@ public:
     bool isBlocking() const;
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Types of protocols that the socket can use
     ///
     ////////////////////////////////////////////////////////////
-    enum Type
+    enum class Type
     {
         Tcp, //!< TCP protocol
         Udp  //!< UDP protocol
@@ -167,7 +177,6 @@ protected:
     void close();
 
 private:
-
     friend class SocketSelector;
 
     ////////////////////////////////////////////////////////////
@@ -205,7 +214,7 @@ private:
 /// In non-blocking mode, all the socket functions will
 /// return immediately. If the socket is not ready to complete
 /// the requested operation, the function simply returns
-/// the proper status code (Socket::NotReady).
+/// the proper status code (Socket::Status::NotReady).
 ///
 /// The default mode, which is blocking, is the one that is
 /// generally used, in combination with threads or selectors.

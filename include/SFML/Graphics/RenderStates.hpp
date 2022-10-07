@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,6 +29,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics/Export.hpp>
+
 #include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/Transform.hpp>
 
@@ -45,7 +46,6 @@ class Texture;
 class SFML_GRAPHICS_API RenderStates
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -101,8 +101,7 @@ public:
     /// \param theShader    Shader to use
     ///
     ////////////////////////////////////////////////////////////
-    RenderStates(const BlendMode& theBlendMode, const Transform& theTransform,
-                 const Texture* theTexture, const Shader* theShader);
+    RenderStates(const BlendMode& theBlendMode, const Transform& theTransform, const Texture* theTexture, const Shader* theShader);
 
     ////////////////////////////////////////////////////////////
     // Static member data

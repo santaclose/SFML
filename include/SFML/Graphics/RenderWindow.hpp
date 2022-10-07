@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,10 +29,9 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics/Export.hpp>
+
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Image.hpp>
 #include <SFML/Window/Window.hpp>
-#include <string>
 
 
 namespace sf
@@ -44,7 +43,6 @@ namespace sf
 class SFML_GRAPHICS_API RenderWindow : public Window, public RenderTarget
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -73,7 +71,11 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    RenderWindow(VideoMode mode, const String& title, Uint32 style = Style::Default, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
+    RenderWindow(VideoMode              mode,
+                 const String&          title,
+                 std::uint32_t          style    = Style::Default,
+                 const ContextSettings& settings = ContextSettings(),
+                 bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -99,7 +101,7 @@ public:
     /// Closes the window and frees all the resources attached to it.
     ///
     ////////////////////////////////////////////////////////////
-    virtual ~RenderWindow();
+    ~RenderWindow() override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Get the size of the rendering region of the window
@@ -110,7 +112,7 @@ public:
     /// \return Size in pixels
     ///
     ////////////////////////////////////////////////////////////
-    virtual Vector2u getSize() const;
+    Vector2u getSize() const override;
 
 
     ////////////////////////////////////////////////////////////
@@ -121,7 +123,7 @@ public:
     /// \return True if the window use sRGB encoding, false otherwise
     ///
     ////////////////////////////////////////////////////////////
-    virtual bool isSrgb() const;
+    bool isSrgb() const override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Activate or deactivate the window as the current target
@@ -139,37 +141,9 @@ public:
     /// \return True if operation was successful, false otherwise
     ///
     ////////////////////////////////////////////////////////////
-    bool setActive(bool active = true);
-
-    ////////////////////////////////////////////////////////////
-    /// \brief Copy the current contents of the window to an image
-    ///
-    /// \deprecated
-    /// Use a sf::Texture and its sf::Texture::update(const Window&)
-    /// function and copy its contents into an sf::Image instead.
-    /// \code
-    /// sf::Vector2u windowSize = window.getSize();
-    /// sf::Texture texture;
-    /// texture.create(windowSize.x, windowSize.y);
-    /// texture.update(window);
-    /// sf::Image screenshot = texture.copyToImage();
-    /// \endcode
-    ///
-    /// This is a slow operation, whose main purpose is to make
-    /// screenshots of the application. If you want to update an
-    /// image with the contents of the window and then use it for
-    /// drawing, you should rather use a sf::Texture and its
-    /// update(Window&) function.
-    /// You can also draw things directly to a texture with the
-    /// sf::RenderTexture class.
-    ///
-    /// \return Image containing the captured contents
-    ///
-    ////////////////////////////////////////////////////////////
-    SFML_DEPRECATED Image capture() const;
+    [[nodiscard]] bool setActive(bool active = true) override;
 
 protected:
-
     ////////////////////////////////////////////////////////////
     /// \brief Function called after the window has been created
     ///
@@ -178,7 +152,7 @@ protected:
     /// the window is created.
     ///
     ////////////////////////////////////////////////////////////
-    virtual void onCreate();
+    void onCreate() override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Function called after the window has been resized
@@ -187,10 +161,9 @@ protected:
     /// perform custom actions when the size of the window changes.
     ///
     ////////////////////////////////////////////////////////////
-    virtual void onResize();
+    void onResize() override;
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
@@ -232,8 +205,7 @@ private:
 /// while (window.isOpen())
 /// {
 ///    // Event processing
-///    sf::Event event;
-///    while (window.pollEvent(event))
+///    for (sf::Event event; window.pollEvent(event);)
 ///    {
 ///        // Request for closing the window
 ///        if (event.type == sf::Event::Closed)
@@ -282,7 +254,7 @@ private:
 ///     window.popGLStates();
 ///
 ///     // Draw a 3D object using OpenGL
-///     glBegin(GL_QUADS);
+///     glBegin(GL_TRIANGLES);
 ///         glVertex3f(...);
 ///         ...
 ///     glEnd();

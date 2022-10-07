@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,6 +25,7 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <SFML/System/String.hpp>
 #include <SFML/Window/iOS/ClipboardImpl.hpp>
 
 #import <UIKit/UIKit.h>
@@ -42,8 +43,8 @@ String ClipboardImpl::getString()
     {
         NSString* data = pboard.string;
 
-        char const* utf8 = [data cStringUsingEncoding:NSUTF8StringEncoding];
-        NSUInteger length = [data lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        char const* utf8   = [data cStringUsingEncoding:NSUTF8StringEncoding];
+        NSUInteger  length = [data lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
 
         return String::fromUtf8(utf8, utf8 + length);
     }
@@ -57,16 +58,13 @@ String ClipboardImpl::getString()
 ////////////////////////////////////////////////////////////
 void ClipboardImpl::setString(const String& text)
 {
-    std::basic_string<Uint8> utf8 = text.toUtf8();
-    NSString* data = [[NSString alloc] initWithBytes:utf8.data()
-                                              length:utf8.length()
-                                            encoding:NSUTF8StringEncoding];
+    std::basic_string<std::uint8_t> utf8 = text.toUtf8();
+    NSString* data = [[NSString alloc] initWithBytes:utf8.data() length:utf8.length() encoding:NSUTF8StringEncoding];
 
     UIPasteboard* pboard = [UIPasteboard generalPasteboard];
-    pboard.string = data;
+    pboard.string        = data;
 }
 
 } // namespace priv
 
 } // namespace sf
-

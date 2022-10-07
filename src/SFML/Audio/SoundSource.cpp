@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,9 +25,12 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Audio/SoundSource.hpp>
 #include <SFML/Audio/ALCheck.hpp>
+#include <SFML/Audio/SoundSource.hpp>
 
+#if defined(__APPLE__)
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace sf
 {
@@ -77,16 +80,9 @@ void SoundSource::setVolume(float volume)
 
 
 ////////////////////////////////////////////////////////////
-void SoundSource::setPosition(float x, float y, float z)
-{
-    alCheck(alSource3f(m_source, AL_POSITION, x, y, z));
-}
-
-
-////////////////////////////////////////////////////////////
 void SoundSource::setPosition(const Vector3f& position)
 {
-    setPosition(position.x, position.y, position.z);
+    alCheck(alSource3f(m_source, AL_POSITION, position.x, position.y, position.z));
 }
 
 
@@ -172,7 +168,7 @@ float SoundSource::getAttenuation() const
 
 
 ////////////////////////////////////////////////////////////
-SoundSource& SoundSource::operator =(const SoundSource& right)
+SoundSource& SoundSource::operator=(const SoundSource& right)
 {
     // Leave m_source untouched -- it's not necessary to destroy and
     // recreate the OpenAL sound source, hence no copy-and-swap idiom
@@ -198,9 +194,12 @@ SoundSource::Status SoundSource::getStatus() const
     switch (status)
     {
         case AL_INITIAL:
-        case AL_STOPPED: return Stopped;
-        case AL_PAUSED:  return Paused;
-        case AL_PLAYING: return Playing;
+        case AL_STOPPED:
+            return Stopped;
+        case AL_PAUSED:
+            return Paused;
+        case AL_PLAYING:
+            return Playing;
     }
 
     return Stopped;

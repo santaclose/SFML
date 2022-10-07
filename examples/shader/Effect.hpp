@@ -5,6 +5,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics.hpp>
+
 #include <cassert>
 #include <string>
 
@@ -15,8 +16,7 @@
 class Effect : public sf::Drawable
 {
 public:
-
-    virtual ~Effect()
+    ~Effect() override
     {
     }
 
@@ -41,7 +41,7 @@ public:
             onUpdate(time, x, y);
     }
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const
+    void draw(sf::RenderTarget& target, const sf::RenderStates& states) const override
     {
         if (m_isLoaded)
         {
@@ -50,37 +50,32 @@ public:
         else
         {
             sf::Text error("Shader not\nsupported", getFont());
-            error.setPosition(320.f, 200.f);
+            error.setPosition({320.f, 200.f});
             error.setCharacterSize(36);
             target.draw(error, states);
         }
     }
 
 protected:
-
-    Effect(const std::string& name) :
-    m_name(name),
-    m_isLoaded(false)
+    Effect(const std::string& name) : m_name(name), m_isLoaded(false)
     {
     }
 
     static const sf::Font& getFont()
     {
-        assert(s_font != NULL);
+        assert(s_font != nullptr);
         return *s_font;
     }
 
 private:
-
     // Virtual functions to be implemented in derived effects
-    virtual bool onLoad() = 0;
-    virtual void onUpdate(float time, float x, float y) = 0;
-    virtual void onDraw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
+    virtual bool onLoad()                                                               = 0;
+    virtual void onUpdate(float time, float x, float y)                                 = 0;
+    virtual void onDraw(sf::RenderTarget& target, const sf::RenderStates& states) const = 0;
 
 private:
-
     std::string m_name;
-    bool m_isLoaded;
+    bool        m_isLoaded;
 
     static const sf::Font* s_font;
 };

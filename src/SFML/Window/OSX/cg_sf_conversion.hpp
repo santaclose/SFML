@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Marco Antognini (antognini.marco@gmail.com),
+// Copyright (C) 2007-2022 Marco Antognini (antognini.marco@gmail.com),
 //                         Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -30,6 +30,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/VideoMode.hpp>
+
 #include <ApplicationServices/ApplicationServices.h>
 
 namespace sf
@@ -43,7 +44,7 @@ namespace priv
 /// to represent video mode. Instead it uses a CGDisplayMode opaque type.
 ///
 ////////////////////////////////////////////////////////////
-size_t modeBitsPerPixel(CGDisplayModeRef mode);
+std::size_t modeBitsPerPixel(CGDisplayModeRef mode);
 
 ////////////////////////////////////////////////////////////
 /// \brief Get bpp for all OS X version
@@ -52,7 +53,7 @@ size_t modeBitsPerPixel(CGDisplayModeRef mode);
 /// display bits per pixel information for a given display id.
 ///
 ////////////////////////////////////////////////////////////
-size_t displayBitsPerPixel(CGDirectDisplayID displayId);
+std::size_t displayBitsPerPixel(CGDirectDisplayID displayId);
 
 ////////////////////////////////////////////////////////////
 /// \brief Convert a Quartz video mode into a sf::VideoMode object

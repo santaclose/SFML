@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -29,7 +29,10 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/System/String.hpp>
+#include <SFML/Window/WindowStyle.hpp> // Prevent conflict with macro None from Xlib
+
 #include <X11/Xlib.h>
+
 #include <deque>
 
 
@@ -45,7 +48,6 @@ namespace priv
 class ClipboardImpl
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the content of the clipboard as string data
     ///
@@ -81,7 +83,6 @@ public:
     static void processEvents();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Constructor
     ///

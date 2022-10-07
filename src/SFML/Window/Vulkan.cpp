@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -30,12 +30,21 @@
 #if defined(SFML_SYSTEM_WINDOWS)
 
 #include <SFML/Window/Win32/VulkanImplWin32.hpp>
-typedef sf::priv::VulkanImplWin32 VulkanImplType;
+using VulkanImplType = sf::priv::VulkanImplWin32;
 
-#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_OPENBSD) || defined(SFML_SYSTEM_NETBSD)
+#elif defined(SFML_SYSTEM_LINUX) || defined(SFML_SYSTEM_FREEBSD) || defined(SFML_SYSTEM_OPENBSD) || \
+    defined(SFML_SYSTEM_NETBSD)
+
+#if defined(SFML_USE_DRM)
+
+#define SFML_VULKAN_IMPLEMENTATION_NOT_AVAILABLE
+
+#else
 
 #include <SFML/Window/Unix/VulkanImplX11.hpp>
-typedef sf::priv::VulkanImplX11 VulkanImplType;
+using VulkanImplType = sf::priv::VulkanImplX11;
+
+#endif
 
 #else
 
@@ -47,7 +56,7 @@ typedef sf::priv::VulkanImplX11 VulkanImplType;
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-bool Vulkan::isAvailable(bool requireGraphics)
+bool Vulkan::isAvailable([[maybe_unused]] bool requireGraphics)
 {
 #if defined(SFML_VULKAN_IMPLEMENTATION_NOT_AVAILABLE)
 
@@ -62,11 +71,11 @@ bool Vulkan::isAvailable(bool requireGraphics)
 
 
 ////////////////////////////////////////////////////////////
-VulkanFunctionPointer Vulkan::getFunction(const char* name)
+VulkanFunctionPointer Vulkan::getFunction([[maybe_unused]] const char* name)
 {
 #if defined(SFML_VULKAN_IMPLEMENTATION_NOT_AVAILABLE)
 
-    return NULL;
+    return nullptr;
 
 #else
 

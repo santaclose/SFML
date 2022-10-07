@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -95,11 +95,7 @@ struct Vector4
     /// \brief Default constructor, creates a zero vector
     ///
     ////////////////////////////////////////////////////////////
-    Vector4() :
-    x(0),
-    y(0),
-    z(0),
-    w(0)
+    Vector4() : x(0), y(0), z(0), w(0)
     {
     }
 
@@ -112,11 +108,7 @@ struct Vector4
     /// \param W Component of the 4D vector
     ///
     ////////////////////////////////////////////////////////////
-    Vector4(T X, T Y, T Z, T W) :
-    x(X),
-    y(Y),
-    z(Z),
-    w(W)
+    Vector4(T X, T Y, T Z, T W) : x(X), y(Y), z(Z), w(W)
     {
     }
 

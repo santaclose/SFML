@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -25,10 +25,13 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Window/Win32/ClipboardImpl.hpp>
+#include <SFML/System/Err.hpp>
 #include <SFML/System/String.hpp>
+#include <SFML/System/Win32/WindowsHeader.hpp>
+#include <SFML/Window/Win32/ClipboardImpl.hpp>
+
+#include <ostream>
 #include <iostream>
-#include <windows.h>
 
 
 namespace sf
@@ -42,13 +45,13 @@ String ClipboardImpl::getString()
 
     if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
     {
-        std::cerr << "Failed to get the clipboard data in Unicode format." << std::endl;
+        err() << "Failed to get the clipboard data in Unicode format." << std::endl;
         return text;
     }
 
-    if (!OpenClipboard(NULL))
+    if (!OpenClipboard(nullptr))
     {
-        std::cerr << "Failed to open the Win32 clipboard." << std::endl;
+        err() << "Failed to open the Win32 clipboard." << std::endl;
         return text;
     }
 
@@ -56,7 +59,7 @@ String ClipboardImpl::getString()
 
     if (!clipboard_handle)
     {
-        std::cerr << "Failed to get Win32 handle for clipboard content." << std::endl;
+        err() << "Failed to get Win32 handle for clipboard content." << std::endl;
         CloseClipboard();
         return text;
     }
@@ -72,21 +75,21 @@ String ClipboardImpl::getString()
 ////////////////////////////////////////////////////////////
 void ClipboardImpl::setString(const String& text)
 {
-    if (!OpenClipboard(NULL))
+    if (!OpenClipboard(nullptr))
     {
-        std::cerr << "Failed to open the Win32 clipboard." << std::endl;
+        err() << "Failed to open the Win32 clipboard." << std::endl;
         return;
     }
 
     if (!EmptyClipboard())
     {
-        std::cerr << "Failed to empty the Win32 clipboard." << std::endl;
+        err() << "Failed to empty the Win32 clipboard." << std::endl;
         return;
     }
 
     // Create a Win32-compatible string
-    size_t string_size = (text.getSize() + 1) * sizeof(WCHAR);
-    HANDLE string_handle = GlobalAlloc(GMEM_MOVEABLE, string_size);
+    std::size_t string_size   = (text.getSize() + 1) * sizeof(WCHAR);
+    HANDLE      string_handle = GlobalAlloc(GMEM_MOVEABLE, string_size);
 
     if (string_handle)
     {
@@ -112,8 +115,9 @@ void ClipboardImpl::setImage(unsigned int width, unsigned int height, const void
         return;
     }
 
-    const sf::Uint8* originalBitmap = (const sf::Uint8*)pointer;
-    sf::Uint8* channelsSwapped = new Uint8[width * height * 4u];
+    
+    const std::uint8_t* originalBitmap = (const std::uint8_t*)pointer;
+    std::uint8_t* channelsSwapped = new std::uint8_t[width * height * 4u];
     for (unsigned int i = 0; i < width * height; i++)
     {
         channelsSwapped[i * 4u + 0u] = originalBitmap[i * 4u + 2u];

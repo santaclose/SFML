@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -27,9 +27,11 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Network/Unix/SocketImpl.hpp>
 #include <SFML/System/Err.hpp>
-#include <errno.h>
-#include <fcntl.h>
+
+#include <cerrno>
 #include <cstring>
+#include <fcntl.h>
+#include <ostream>
 
 
 namespace sf
@@ -37,7 +39,7 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-sockaddr_in SocketImpl::createAddress(Uint32 address, unsigned short port)
+sockaddr_in SocketImpl::createAddress(std::uint32_t address, unsigned short port)
 {
     sockaddr_in addr;
     std::memset(&addr, 0, sizeof(addr));
@@ -80,7 +82,6 @@ void SocketImpl::setBlocking(SocketHandle sock, bool block)
     {
         if (fcntl(sock, F_SETFL, status | O_NONBLOCK) == -1)
             err() << "Failed to set file status flags: " << errno << std::endl;
-
     }
 }
 
@@ -92,19 +93,21 @@ Socket::Status SocketImpl::getErrorStatus()
     // so we have to make a special case for them in order
     // to avoid having double values in the switch case
     if ((errno == EAGAIN) || (errno == EINPROGRESS))
-        return Socket::NotReady;
+        return Socket::Status::NotReady;
 
+    // clang-format off
     switch (errno)
     {
-        case EWOULDBLOCK:  return Socket::NotReady;
-        case ECONNABORTED: return Socket::Disconnected;
-        case ECONNRESET:   return Socket::Disconnected;
-        case ETIMEDOUT:    return Socket::Disconnected;
-        case ENETRESET:    return Socket::Disconnected;
-        case ENOTCONN:     return Socket::Disconnected;
-        case EPIPE:        return Socket::Disconnected;
-        default:           return Socket::Error;
+        case EWOULDBLOCK:  return Socket::Status::NotReady;
+        case ECONNABORTED: return Socket::Status::Disconnected;
+        case ECONNRESET:   return Socket::Status::Disconnected;
+        case ETIMEDOUT:    return Socket::Status::Disconnected;
+        case ENETRESET:    return Socket::Status::Disconnected;
+        case ENOTCONN:     return Socket::Status::Disconnected;
+        case EPIPE:        return Socket::Status::Disconnected;
+        default:           return Socket::Status::Error;
     }
+    // clang-format on
 }
 
 } // namespace priv

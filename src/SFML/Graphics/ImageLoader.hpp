@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -28,8 +28,11 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/NonCopyable.hpp>
+#include <SFML/Config.hpp>
+
 #include <SFML/System/Vector2.hpp>
+
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -44,10 +47,9 @@ namespace priv
 /// \brief Load/save image files
 ///
 ////////////////////////////////////////////////////////////
-class ImageLoader : NonCopyable
+class ImageLoader
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the unique instance of the class
     ///
@@ -66,7 +68,7 @@ public:
     /// \return True if loading was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool loadImageFromFile(const std::string& filename, std::vector<Uint8>& pixels, Vector2u& size);
+    bool loadImageFromFile(const std::filesystem::path& filename, std::vector<std::uint8_t>& pixels, Vector2u& size);
 
     ////////////////////////////////////////////////////////////
     /// \brief Load an image from a file in memory
@@ -79,7 +81,7 @@ public:
     /// \return True if loading was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool loadImageFromMemory(const void* data, std::size_t dataSize, std::vector<Uint8>& pixels, Vector2u& size);
+    bool loadImageFromMemory(const void* data, std::size_t dataSize, std::vector<std::uint8_t>& pixels, Vector2u& size);
 
     ////////////////////////////////////////////////////////////
     /// \brief Load an image from a custom stream
@@ -91,7 +93,7 @@ public:
     /// \return True if loading was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool loadImageFromStream(InputStream& stream, std::vector<Uint8>& pixels, Vector2u& size);
+    bool loadImageFromStream(InputStream& stream, std::vector<std::uint8_t>& pixels, Vector2u& size);
 
     ////////////////////////////////////////////////////////////
     /// \brief Save an array of pixels as an image file
@@ -103,7 +105,7 @@ public:
     /// \return True if saving was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool saveImageToFile(const std::string& filename, const std::vector<Uint8>& pixels, const Vector2u& size);
+    bool saveImageToFile(const std::filesystem::path& filename, const std::vector<std::uint8_t>& pixels, const Vector2u& size);
 
     ////////////////////////////////////////////////////////////
     /// \brief Save an array of pixels as an encoded image buffer
@@ -116,10 +118,12 @@ public:
     /// \return True if saving was successful
     ///
     ////////////////////////////////////////////////////////////
-    bool saveImageToMemory(const std::string& format, std::vector<sf::Uint8>& output, const std::vector<Uint8>& pixels, const Vector2u& size);
+    bool saveImageToMemory(const std::string&               format,
+                           std::vector<std::uint8_t>&       output,
+                           const std::vector<std::uint8_t>& pixels,
+                           const Vector2u&                  size);
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -127,10 +131,16 @@ private:
     ImageLoader();
 
     ////////////////////////////////////////////////////////////
-    /// \brief Destructor
+    /// \brief Deleted copy constructor
     ///
     ////////////////////////////////////////////////////////////
-    ~ImageLoader();
+    ImageLoader(const ImageLoader&) = delete;
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Deleted copy assignment
+    ///
+    ////////////////////////////////////////////////////////////
+    ImageLoader& operator=(const ImageLoader&) = delete;
 };
 
 } // namespace priv

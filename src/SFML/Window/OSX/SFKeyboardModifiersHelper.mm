@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Marco Antognini (antognini.marco@gmail.com),
+// Copyright (C) 2007-2022 Marco Antognini (antognini.marco@gmail.com),
 //                         Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -26,9 +26,10 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#import <SFML/Window/OSX/SFKeyboardModifiersHelper.h>
 #include <SFML/Window/OSX/WindowImplCocoa.hpp>
 
-#import <SFML/Window/OSX/SFKeyboardModifiersHelper.h>
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 
 ////////////////////////////////////////////////////////////
@@ -36,14 +37,14 @@
 /// keys (cmd, ctrl, alt, shift)
 ///
 ////////////////////////////////////////////////////////////
-#define NSRightShiftKeyMask         0x020004
-#define NSLeftShiftKeyMask          0x020002
-#define NSRightCommandKeyMask       0x100010
-#define NSLeftCommandKeyMask        0x100008
-#define NSRightAlternateKeyMask     0x080040
-#define NSLeftAlternateKeyMask      0x080020
-#define NSRightControlKeyMask       0x042000
-#define NSLeftControlKeyMask        0x040001
+#define NSRightShiftKeyMask     0x020004
+#define NSLeftShiftKeyMask      0x020002
+#define NSRightCommandKeyMask   0x100010
+#define NSLeftCommandKeyMask    0x100008
+#define NSRightAlternateKeyMask 0x080040
+#define NSLeftAlternateKeyMask  0x080020
+#define NSRightControlKeyMask   0x042000
+#define NSLeftControlKeyMask    0x040001
 
 
 ////////////////////////////////////////////////////////////
@@ -70,7 +71,7 @@ struct ModifiersState
 
 /// Share 'modifiers' state with all windows to correctly fire pressed/released events
 static ModifiersState state;
-static BOOL isStateInitialized = NO;
+static BOOL           isStateInitialized = NO;
 
 
 ////////////////////////////////////////////////////////////
@@ -90,8 +91,10 @@ BOOL isKeyMaskActive(NSUInteger modifiers, NSUInteger mask);
 /// Update the key state and send events to the requester
 ///
 ////////////////////////////////////////////////////////////
-void processOneModifier(NSUInteger modifiers, NSUInteger mask,
-                        BOOL& wasDown, sf::Keyboard::Key key,
+void processOneModifier(NSUInteger                 modifiers,
+                        NSUInteger                 mask,
+                        BOOL&                      wasDown,
+                        sf::Keyboard::Key          key,
                         sf::priv::WindowImplCocoa& requester);
 
 
@@ -101,12 +104,15 @@ void processOneModifier(NSUInteger modifiers, NSUInteger mask,
 /// Update the keys state and send events to the requester
 ///
 ////////////////////////////////////////////////////////////
-void processLeftRightModifiers(NSUInteger modifiers,
-                               NSUInteger leftMask, NSUInteger rightMask,
-                               BOOL& leftWasDown, BOOL& rightWasDown,
-                               sf::Keyboard::Key leftKey, sf::Keyboard::Key rightKey,
-                               sf::priv::WindowImplCocoa& requester);
-
+void processLeftRightModifiers(
+    NSUInteger                 modifiers,
+    NSUInteger                 leftMask,
+    NSUInteger                 rightMask,
+    BOOL&                      leftWasDown,
+    BOOL&                      rightWasDown,
+    sf::Keyboard::Key          leftKey,
+    sf::Keyboard::Key          rightKey,
+    sf::priv::WindowImplCocoa& requester);
 
 
 ////////////////////////////////////////////////////////////
@@ -115,21 +121,22 @@ void processLeftRightModifiers(NSUInteger modifiers,
 
 
 ////////////////////////////////////////////////////////
-void initialiseKeyboardHelper(void)
+void initialiseKeyboardHelper()
 {
-    if (isStateInitialized) return;
+    if (isStateInitialized)
+        return;
 
     NSUInteger modifiers = [[NSApp currentEvent] modifierFlags];
 
     // Load current keyboard state
-    state.leftShiftWasDown        = isKeyMaskActive(modifiers, NSLeftShiftKeyMask);
-    state.rightShiftWasDown       = isKeyMaskActive(modifiers, NSRightShiftKeyMask);
-    state.leftCommandWasDown      = isKeyMaskActive(modifiers, NSLeftCommandKeyMask);
-    state.rightCommandWasDown     = isKeyMaskActive(modifiers, NSRightCommandKeyMask);
-    state.leftAlternateWasDown    = isKeyMaskActive(modifiers, NSLeftAlternateKeyMask);
-    state.rightAlternateWasDown   = isKeyMaskActive(modifiers, NSRightAlternateKeyMask);
-    state.leftControlWasDown      = isKeyMaskActive(modifiers, NSLeftControlKeyMask);
-    state.rightControlWasDown     = isKeyMaskActive(modifiers, NSRightControlKeyMask);
+    state.leftShiftWasDown      = isKeyMaskActive(modifiers, NSLeftShiftKeyMask);
+    state.rightShiftWasDown     = isKeyMaskActive(modifiers, NSRightShiftKeyMask);
+    state.leftCommandWasDown    = isKeyMaskActive(modifiers, NSLeftCommandKeyMask);
+    state.rightCommandWasDown   = isKeyMaskActive(modifiers, NSRightCommandKeyMask);
+    state.leftAlternateWasDown  = isKeyMaskActive(modifiers, NSLeftAlternateKeyMask);
+    state.rightAlternateWasDown = isKeyMaskActive(modifiers, NSRightAlternateKeyMask);
+    state.leftControlWasDown    = isKeyMaskActive(modifiers, NSLeftControlKeyMask);
+    state.rightControlWasDown   = isKeyMaskActive(modifiers, NSRightControlKeyMask);
 
     isStateInitialized = YES;
 }
@@ -153,40 +160,44 @@ sf::Event::KeyEvent keyEventWithModifiers(NSUInteger modifiers, sf::Keyboard::Ke
 void handleModifiersChanged(NSUInteger modifiers, sf::priv::WindowImplCocoa& requester)
 {
     // Handle shift
-    processLeftRightModifiers(
-        modifiers,
-        NSLeftShiftKeyMask, NSRightShiftKeyMask,
-        state.leftShiftWasDown, state.rightShiftWasDown,
-        sf::Keyboard::LShift, sf::Keyboard::RShift,
-        requester
-    );
+    processLeftRightModifiers(modifiers,
+                              NSLeftShiftKeyMask,
+                              NSRightShiftKeyMask,
+                              state.leftShiftWasDown,
+                              state.rightShiftWasDown,
+                              sf::Keyboard::LShift,
+                              sf::Keyboard::RShift,
+                              requester);
 
     // Handle command
-    processLeftRightModifiers(
-        modifiers,
-        NSLeftCommandKeyMask, NSRightCommandKeyMask,
-        state.leftCommandWasDown, state.rightCommandWasDown,
-        sf::Keyboard::LSystem, sf::Keyboard::RSystem,
-        requester
-    );
+    processLeftRightModifiers(modifiers,
+                              NSLeftCommandKeyMask,
+                              NSRightCommandKeyMask,
+                              state.leftCommandWasDown,
+                              state.rightCommandWasDown,
+                              sf::Keyboard::LSystem,
+                              sf::Keyboard::RSystem,
+                              requester);
 
     // Handle option (alt)
-    processLeftRightModifiers(
-        modifiers,
-        NSLeftAlternateKeyMask, NSRightAlternateKeyMask,
-        state.leftAlternateWasDown, state.rightAlternateWasDown,
-        sf::Keyboard::LAlt, sf::Keyboard::RAlt,
-        requester
-    );
+    processLeftRightModifiers(modifiers,
+                              NSLeftAlternateKeyMask,
+                              NSRightAlternateKeyMask,
+                              state.leftAlternateWasDown,
+                              state.rightAlternateWasDown,
+                              sf::Keyboard::LAlt,
+                              sf::Keyboard::RAlt,
+                              requester);
 
     // Handle control
-    processLeftRightModifiers(
-        modifiers,
-        NSLeftControlKeyMask, NSRightControlKeyMask,
-        state.leftControlWasDown, state.rightControlWasDown,
-        sf::Keyboard::LControl, sf::Keyboard::RControl,
-        requester
-    );
+    processLeftRightModifiers(modifiers,
+                              NSLeftControlKeyMask,
+                              NSRightControlKeyMask,
+                              state.leftControlWasDown,
+                              state.rightControlWasDown,
+                              sf::Keyboard::LControl,
+                              sf::Keyboard::RControl,
+                              requester);
 }
 
 
@@ -201,9 +212,7 @@ BOOL isKeyMaskActive(NSUInteger modifiers, NSUInteger mask)
 
 
 ////////////////////////////////////////////////////////
-void processOneModifier(NSUInteger modifiers, NSUInteger mask,
-                        BOOL& wasDown, sf::Keyboard::Key key,
-                        sf::priv::WindowImplCocoa& requester)
+void processOneModifier(NSUInteger modifiers, NSUInteger mask, BOOL& wasDown, sf::Keyboard::Key key, sf::priv::WindowImplCocoa& requester)
 {
     // Setup a potential event key.
     sf::Event::KeyEvent event = keyEventWithModifiers(modifiers, key);
@@ -227,14 +236,16 @@ void processOneModifier(NSUInteger modifiers, NSUInteger mask,
 
 
 ////////////////////////////////////////////////////////
-void processLeftRightModifiers(NSUInteger modifiers,
-                               NSUInteger leftMask, NSUInteger rightMask,
-                               BOOL& leftWasDown, BOOL& rightWasDown,
-                               sf::Keyboard::Key leftKey, sf::Keyboard::Key rightKey,
-                               sf::priv::WindowImplCocoa& requester)
+void processLeftRightModifiers(
+    NSUInteger                 modifiers,
+    NSUInteger                 leftMask,
+    NSUInteger                 rightMask,
+    BOOL&                      leftWasDown,
+    BOOL&                      rightWasDown,
+    sf::Keyboard::Key          leftKey,
+    sf::Keyboard::Key          rightKey,
+    sf::priv::WindowImplCocoa& requester)
 {
-    processOneModifier(modifiers, leftMask,  leftWasDown,  leftKey,  requester);
+    processOneModifier(modifiers, leftMask, leftWasDown, leftKey, requester);
     processOneModifier(modifiers, rightMask, rightWasDown, rightKey, requester);
 }
-
-

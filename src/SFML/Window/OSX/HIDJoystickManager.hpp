@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Marco Antognini (antognini.marco@gmail.com),
+// Copyright (C) 2007-2022 Marco Antognini (antognini.marco@gmail.com),
 //                         Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -29,7 +29,6 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/System/NonCopyable.hpp>
 #include <IOKit/hid/IOHIDDevice.h>
 #include <IOKit/hid/IOHIDManager.h>
 
@@ -44,10 +43,9 @@ namespace priv
 /// It's only purpose is to help sf::priv::JoystickImpl class.
 ///
 ////////////////////////////////////////////////////////////
-class HIDJoystickManager : NonCopyable
+class HIDJoystickManager
 {
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the unique instance of the class
     ///
@@ -59,7 +57,6 @@ public:
     static HIDJoystickManager& getInstance();
 
 public:
-
     ////////////////////////////////////////////////////////////
     /// \brief Get the number of currently connected joystick
     ///
@@ -69,13 +66,12 @@ public:
     ////////////////////////////////////////////////////////////
     /// \brief Copy the devices associated with this HID manager
     ///
-    /// \return a retained CFSetRef of IOHIDDeviceRef or NULL
+    /// \return a retained CFSetRef of IOHIDDeviceRef or a null pointer
     ///
     ////////////////////////////////////////////////////////////
     CFSetRef copyJoysticks();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Default constructor
     ///
@@ -89,13 +85,24 @@ private:
     ~HIDJoystickManager();
 
     ////////////////////////////////////////////////////////////
+    /// \brief Deleted copy constructor
+    ///
+    ////////////////////////////////////////////////////////////
+    HIDJoystickManager(const HIDJoystickManager&) = delete;
+
+    ////////////////////////////////////////////////////////////
+    /// \brief Deleted copy assignment
+    ///
+    ////////////////////////////////////////////////////////////
+    HIDJoystickManager& operator=(const HIDJoystickManager&) = delete;
+
+    ////////////////////////////////////////////////////////////
     /// \brief Make sure all event have been processed in the run loop
     ///
     ////////////////////////////////////////////////////////////
     void update();
 
 private:
-
     ////////////////////////////////////////////////////////////
     /// \brief Private "plug-in" callback
     /// \note Only 'context' parameter is used.
@@ -113,12 +120,11 @@ private:
     static void pluggedOut(void* context, IOReturn, void*, IOHIDDeviceRef);
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
-    IOHIDManagerRef m_manager;      ///< HID Manager
-    unsigned int    m_joystickCount;///< Number of joysticks currently connected
+    IOHIDManagerRef m_manager;       ///< HID Manager
+    unsigned int    m_joystickCount; ///< Number of joysticks currently connected
 };
 
 

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Marco Antognini (antognini.marco@gmail.com),
+// Copyright (C) 2007-2022 Marco Antognini (antognini.marco@gmail.com),
 //                         Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
@@ -32,11 +32,11 @@
 #ifdef __OBJC__
 
 @class NSAutoreleasePool;
-typedef NSAutoreleasePool* NSAutoreleasePoolRef;
+using NSAutoreleasePoolRef = NSAutoreleasePool*;
 
 #else // If C++
 
-typedef void* NSAutoreleasePoolRef;
+using NSAutoreleasePoolRef = void*;
 
 #endif
 
@@ -64,7 +64,6 @@ public:
     ~AutoreleasePool();
 
 private:
-
     ////////////////////////////////////////////////////////////
     // Member data
     ////////////////////////////////////////////////////////////
