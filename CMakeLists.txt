@@ -249,6 +249,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMake")
 
 # add the subdirectories
 add_subdirectory(src/SFML)
+add_subdirectory(src/TinyTIFF)
 if(SFML_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()

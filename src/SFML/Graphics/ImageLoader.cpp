@@ -33,6 +33,7 @@
 #include <stb_image.h>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+#include <TinyTIFF/src/tinytiffreader.h>
 
 #include <filesystem>
 #include <iomanip>
@@ -98,37 +99,133 @@ bool ImageLoader::loadImageFromFile(const std::filesystem::path& filename, std::
     pixels.clear();
 
     // Load the image and get a pointer to the pixels in memory
-    int            width    = 0;
-    int            height   = 0;
-    int            channels = 0;
-    unsigned char* ptr      = stbi_load(filename.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
-
-    if (ptr)
+    if (filename.extension().string().compare(".tiff") == 0 || filename.extension().string().compare(".tif") == 0)
     {
-        // Assign the image properties
-        size.x = static_cast<unsigned int>(width);
-        size.y = static_cast<unsigned int>(height);
-
-        if (width > 0 && height > 0)
+        TinyTIFFReaderFile* tiffr = NULL;
+        tiffr                     = TinyTIFFReader_open(filename.string().c_str());
+        if (!tiffr)
         {
-            // Copy the loaded pixels to the pixel buffer
-            pixels.resize(static_cast<std::size_t>(width * height * 4));
-            memcpy(pixels.data(), ptr, pixels.size());
+            err() << "    ERROR reading (not existent, not accessible or no TIFF file)\n";
         }
+        else
+        {
+            if (TinyTIFFReader_wasError(tiffr))
+            {
+                err() << "   ERROR:" << TinyTIFFReader_getLastError(tiffr) << "\n";
+            }
+            else
+            {
+                err() << "    ImageDescription:\n" << TinyTIFFReader_getImageDescription(tiffr) << "\n";
+                uint32_t frames = TinyTIFFReader_countFrames(tiffr);
+                err() << "    frames: " << frames << "\n";
+                uint32_t frame = 0;
+                if (TinyTIFFReader_wasError(tiffr))
+                {
+                    err() << "   ERROR:" << TinyTIFFReader_getLastError(tiffr) << "\n";
+                }
+                else
+                {
+                    bool sizeInitialized = false;
+                    do
+                    {
+                        const uint32_t width         = TinyTIFFReader_getWidth(tiffr);
+                        const uint32_t height        = TinyTIFFReader_getHeight(tiffr);
+                        const uint16_t samples       = TinyTIFFReader_getSamplesPerPixel(tiffr);
+                        const uint16_t bitspersample = TinyTIFFReader_getBitsPerSample(tiffr, 0);
+                        bool           ok            = true;
+                        err() << "    size of frame " << frame << ": " << width << "x" << height << "\n";
+                        err() << "    each pixel has " << samples << " samples with " << bitspersample << " bits each\n";
+                        if (ok)
+                        {
+                            if (!sizeInitialized)
+                            {
+                                size.x = static_cast<unsigned int>(width);
+                                size.y = static_cast<unsigned int>(height);
+                                pixels.resize(static_cast<std::size_t>(width * height * 4));
+                                std::fill(pixels.begin(), pixels.end(), 255);
+                                sizeInitialized = true;
+                            }
 
-        // Free the loaded pixels (they are now in our own pixel buffer)
-        stbi_image_free(ptr);
+                            uint32_t dataTypeSize = bitspersample / 8;
+                            frame++;
+                            // allocate memory for 1 sample from the image
+                            uint8_t* image = (uint8_t*)calloc(width * height, bitspersample / 8);
 
-        return true;
+                            for (uint16_t sample = 0; sample < samples; sample++)
+                            {
+                                // read the sample
+                                TinyTIFFReader_getSampleData(tiffr, image, sample);
+                                if (TinyTIFFReader_wasError(tiffr))
+                                {
+                                    ok = false;
+                                    err() << "   ERROR:" << TinyTIFFReader_getLastError(tiffr) << "\n";
+                                    break;
+                                }
+
+                                if (bitspersample == 16)
+                                {
+                                    for (int currentPixel = 0; currentPixel < width * height; currentPixel++)
+                                    {
+                                        uint16_t* pixelValue = (uint16_t*)(((uint8_t*)image) + (currentPixel * dataTypeSize));
+                                        double fromZeroToOne = ((double)(*pixelValue)) / 65535.0;
+                                        uint8_t convertedValue = (uint8_t)(fromZeroToOne * 255.0);
+                                        pixels[currentPixel * 4 + sample] = convertedValue;
+                                    }
+                                }
+                                else if (bitspersample == 8)
+                                {
+                                    for (int currentPixel = 0; currentPixel < width * height; currentPixel++)
+                                    {
+                                        uint8_t* pixelValue = (uint8_t*)(((uint8_t*)image) + (currentPixel * dataTypeSize));
+                                        pixels[currentPixel * 4 + sample] = *pixelValue;
+                                    }
+                                }
+                            }
+
+                            free(image);
+                        }
+                    } while (TinyTIFFReader_readNext(tiffr)); // iterate over all frames
+                    err() << "    read " << frame << " frames\n";
+                    return true;
+                }
+            }
+        }
+        TinyTIFFReader_close(tiffr); 
     }
     else
     {
-        // Error, failed to load the image
-        err() << "Failed to load image\n"
-              << formatDebugPathInfo(filename) << "\nReason: " << stbi_failure_reason() << std::endl;
+        int            width    = 0;
+        int            height   = 0;
+        int            channels = 0;
+        unsigned char* ptr = stbi_load(filename.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
-        return false;
+        if (ptr)
+        {
+            // Assign the image properties
+            size.x = static_cast<unsigned int>(width);
+            size.y = static_cast<unsigned int>(height);
+
+            if (width > 0 && height > 0)
+            {
+                // Copy the loaded pixels to the pixel buffer
+                pixels.resize(static_cast<std::size_t>(width * height * 4));
+                memcpy(pixels.data(), ptr, pixels.size());
+            }
+
+            // Free the loaded pixels (they are now in our own pixel buffer)
+            stbi_image_free(ptr);
+
+            return true;
+        }
+        else
+        {
+            // Error, failed to load the image
+            err() << "Failed to load image\n"
+                  << formatDebugPathInfo(filename) << "\nReason: " << stbi_failure_reason() << std::endl;
+
+        }
     }
+    return false;
 }
 
 
