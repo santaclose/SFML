@@ -51,10 +51,10 @@ m_defaultFrameBuffer(0)
 
 
 ////////////////////////////////////////////////////////////
-RenderWindow::RenderWindow(WindowHandle handle, const ContextSettings& settings, bool acceptFiles) : m_defaultFrameBuffer(0)
+RenderWindow::RenderWindow(WindowHandle handle, const ContextSettings& settings) : m_defaultFrameBuffer(0)
 {
     // Don't call the base class constructor because it contains virtual function calls
-    Window::create(handle, settings, acceptFiles);
+    Window::create(handle, settings);
 }
 
 

@@ -45,9 +45,4 @@ void Clipboard::setString(const String& text)
     return priv::ClipboardImpl::setString(text);
 }
 
-void Clipboard::setImage(unsigned int width, unsigned int height, const void* pointer)
-{
-    return priv::ClipboardImpl::setImage(width, height, pointer);
-}
-
 } // namespace sf

@@ -101,7 +101,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    explicit Window(WindowHandle handle, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
+    explicit Window(WindowHandle handle, const ContextSettings& settings = ContextSettings());
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
@@ -154,7 +154,7 @@ public:
     /// \param handle   Platform-specific handle of the control
     ///
     ////////////////////////////////////////////////////////////
-    void create(WindowHandle handle, bool acceptFiles = false) override;
+    void create(WindowHandle handle) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
@@ -171,7 +171,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(WindowHandle handle, const ContextSettings& settings, bool acceptFiles = false);
+    virtual void create(WindowHandle handle, const ContextSettings& settings);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the window and destroy all the attached resources

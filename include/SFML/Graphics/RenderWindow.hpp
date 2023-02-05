@@ -93,7 +93,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    explicit RenderWindow(WindowHandle handle, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
+    explicit RenderWindow(WindowHandle handle, const ContextSettings& settings = ContextSettings());
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor

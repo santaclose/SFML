@@ -129,7 +129,7 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-WindowImplWin32::WindowImplWin32(WindowHandle handle, bool acceptFiles) :
+WindowImplWin32::WindowImplWin32(WindowHandle handle) :
 m_handle(handle),
 m_callback(0),
 m_cursorVisible(true), // might need to call GetCursorInfo

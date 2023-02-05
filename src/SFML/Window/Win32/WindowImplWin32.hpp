@@ -52,7 +52,7 @@ public:
     /// \param handle Platform-specific handle of the control
     ///
     ////////////////////////////////////////////////////////////
-    WindowImplWin32(WindowHandle handle, bool acceptFiles = false);
+    WindowImplWin32(WindowHandle handle);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create the window implementation

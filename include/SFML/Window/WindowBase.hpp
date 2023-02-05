@@ -131,7 +131,7 @@ public:
     /// \param handle Platform-specific handle of the control
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(WindowHandle handle, bool acceptFiles = false);
+    virtual void create(WindowHandle handle);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the window and destroy all the attached resources

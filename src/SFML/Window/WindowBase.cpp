@@ -121,13 +121,13 @@ void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style
 
 
 ////////////////////////////////////////////////////////////
-void WindowBase::create(WindowHandle handle, bool acceptFiles)
+void WindowBase::create(WindowHandle handle)
 {
     // Destroy the previous window implementation
     close();
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(handle, acceptFiles);
+    m_impl = priv::WindowImpl::create(handle);
 
     // Perform common initializations
     initialize();

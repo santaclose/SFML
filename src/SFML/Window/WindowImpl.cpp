@@ -108,9 +108,9 @@ std::unique_ptr<WindowImpl> WindowImpl::create(VideoMode mode, const String& tit
 
 
 ////////////////////////////////////////////////////////////
-std::unique_ptr<WindowImpl> WindowImpl::create(WindowHandle handle, bool acceptFiles)
+std::unique_ptr<WindowImpl> WindowImpl::create(WindowHandle handle)
 {
-    return std::make_unique<WindowImplType>(handle, acceptFiles);
+    return std::make_unique<WindowImplType>(handle);
 }
 
 

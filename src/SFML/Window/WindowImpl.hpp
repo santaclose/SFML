@@ -83,7 +83,7 @@ public:
     /// \return Pointer to the created window
     ///
     ////////////////////////////////////////////////////////////
-    static std::unique_ptr<WindowImpl> create(WindowHandle handle, bool acceptFiles = false);
+    static std::unique_ptr<WindowImpl> create(WindowHandle handle);
 
 public:
     ////////////////////////////////////////////////////////////

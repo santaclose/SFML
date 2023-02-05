@@ -52,9 +52,9 @@ m_frameTimeLimit(Time::Zero)
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(WindowHandle handle, const ContextSettings& settings, bool acceptFiles) : m_context(), m_frameTimeLimit(Time::Zero)
+Window::Window(WindowHandle handle, const ContextSettings& settings) : m_context(), m_frameTimeLimit(Time::Zero)
 {
-    Window::create(handle, settings, acceptFiles);
+    Window::create(handle, settings);
 }
 
 
@@ -124,20 +124,20 @@ void Window::create(VideoMode mode, const String& title, std::uint32_t style, co
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(WindowHandle handle, bool acceptFiles)
+void Window::create(WindowHandle handle)
 {
-    Window::create(handle, ContextSettings(), acceptFiles);
+    Window::create(handle, ContextSettings());
 }
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(WindowHandle handle, const ContextSettings& settings, bool acceptFiles)
+void Window::create(WindowHandle handle, const ContextSettings& settings)
 {
     // Destroy the previous window implementation
     close();
 
     // Recreate the window implementation
-    WindowBase::create(handle, acceptFiles);
+    WindowBase::create(handle);
 
     // Recreate the context
     m_context = priv::GlContext::create(settings, *m_impl, VideoMode::getDesktopMode().bitsPerPixel);

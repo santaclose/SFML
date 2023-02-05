@@ -271,6 +271,9 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area, bool genera
         {
             update(image);
 
+            if (generateMipmap && !this->generateMipmap())
+                err() << "Failed to generate mipmap" << '\n';
+
             return true;
         }
         else
@@ -317,6 +320,9 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area, bool genera
             // in all contexts immediately (solves problems in multi-threaded apps)
             glCheck(glFlush());
 
+            if (generateMipmap && !this->generateMipmap())
+                err() << "Failed to generate mipmap" << '\n';
+
             return true;
         }
         else
@@ -324,9 +330,6 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area, bool genera
             return false;
         }
     }
-
-    if (generateMipmap)
-        this->generateMipmap();
 }
 
 

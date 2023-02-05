@@ -71,8 +71,6 @@ public:
     ///
     ////////////////////////////////////////////////////////////
     static void setString(const String& text);
-
-    static void setImage(unsigned int width, unsigned int height, const void* pointer);
 };
 
 } // namespace sf
