@@ -28,7 +28,8 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Window/Export.hpp>
-
+#include <SFML/System/String.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 namespace sf
 {

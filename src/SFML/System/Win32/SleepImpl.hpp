@@ -45,4 +45,5 @@ namespace sf::priv
 ////////////////////////////////////////////////////////////
 void sleepImpl(Time time);
 
+void sleepUntilEventImpl();
 } // namespace sf::priv

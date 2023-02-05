@@ -83,7 +83,8 @@ public:
     Window(VideoMode              mode,
            const String&          title,
            std::uint32_t          style    = Style::Default,
-           const ContextSettings& settings = ContextSettings());
+           const ContextSettings& settings = ContextSettings(),
+           bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -121,7 +122,7 @@ public:
     /// \param style    %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default) override;
+    void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default, bool acceptFiles = false) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window
@@ -140,7 +141,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings);
+    virtual void create(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control

@@ -96,7 +96,7 @@ bool ImageLoader::loadImageFromFile(const std::filesystem::path& filename, std::
     int            width    = 0;
     int            height   = 0;
     int            channels = 0;
-    unsigned char* ptr      = stbi_load(filename.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
+    unsigned char* ptr = stbi_load(filename.string().c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
     if (ptr)
     {

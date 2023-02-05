@@ -71,7 +71,8 @@ public:
     static std::unique_ptr<WindowImpl> create(VideoMode              mode,
                                               const String&          title,
                                               std::uint32_t          style,
-                                              const ContextSettings& settings);
+                                              const ContextSettings& settings,
+                                              bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new window depending on to the current OS

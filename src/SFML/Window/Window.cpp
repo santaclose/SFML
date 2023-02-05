@@ -41,9 +41,11 @@ Window::Window() = default;
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings)
+Window::Window(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings, bool acceptFiles) :
+m_context(),
+m_frameTimeLimit(Time::Zero)
 {
-    Window::create(mode, title, style, settings);
+    Window::create(mode, title, style, settings, acceptFiles);
 }
 
 
@@ -62,14 +64,14 @@ Window::~Window()
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, std::uint32_t style)
+void Window::create(VideoMode mode, const String& title, std::uint32_t style, bool acceptFiles)
 {
-    Window::create(mode, title, style, ContextSettings());
+    Window::create(mode, title, style, ContextSettings(), acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings)
+void Window::create(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& settings, bool acceptFiles)
 {
     // Destroy the previous window implementation
     close();
@@ -109,7 +111,7 @@ void Window::create(VideoMode mode, const String& title, std::uint32_t style, co
 #endif
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(mode, title, style, settings);
+    m_impl = priv::WindowImpl::create(mode, title, style, settings, acceptFiles);
 
     // Recreate the context
     m_context = priv::GlContext::create(settings, *m_impl, mode.bitsPerPixel);

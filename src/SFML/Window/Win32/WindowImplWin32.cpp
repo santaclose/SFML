@@ -39,6 +39,9 @@
 #include <dbt.h>
 #include <ostream>
 #include <vector>
+#include <cstring>
+#include <atlstr.h>
+#include <shellapi.h>
 
 // MinGW lacks the definition of some Win32 constants
 #ifndef XBUTTON1
@@ -149,7 +152,13 @@ WindowImplWin32::WindowImplWin32(WindowHandle handle) : m_handle(handle)
 
 
 ////////////////////////////////////////////////////////////
-WindowImplWin32::WindowImplWin32(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& /*settings*/) :
+WindowImplWin32::WindowImplWin32(VideoMode mode, const String& title, std::uint32_t style, const ContextSettings& /*settings*/, bool acceptFiles) :
+m_handle(nullptr),
+m_callback(0),
+m_cursorVisible(true), // might need to call GetCursorInfo
+m_lastCursor(LoadCursor(nullptr, IDC_ARROW)),
+m_icon(nullptr),
+m_keyRepeatEnabled(true),
 m_lastSize(mode.size),
 m_fullscreen((style & Style::Fullscreen) != 0),
 m_cursorGrabbed(m_fullscreen)
@@ -195,17 +204,18 @@ m_cursorGrabbed(m_fullscreen)
     }
 
     // Create the window
-    m_handle = CreateWindowW(className,
-                             title.toWideString().c_str(),
-                             win32Style,
-                             left,
-                             top,
-                             width,
-                             height,
-                             nullptr,
-                             nullptr,
-                             GetModuleHandle(nullptr),
-                             this);
+    m_handle = CreateWindowExW(acceptFiles ? WS_EX_ACCEPTFILES : 0L,
+                               className,
+                               title.toWideString().c_str(),
+                               win32Style,
+                               left,
+                               top,
+                               width,
+                               height,
+                               nullptr,
+                               nullptr,
+                               GetModuleHandle(nullptr),
+                               this);
 
     // Register to receive device interface change notifications (used for joystick connection handling)
     DEV_BROADCAST_DEVICEINTERFACE deviceInterface =
@@ -1120,6 +1130,50 @@ void WindowImplWin32::processEvent(UINT message, WPARAM wParam, LPARAM lParam)
                     JoystickImpl::updateConnections();
             }
 
+            break;
+        }
+        case WM_DROPFILES:
+        {
+            Event event;
+            event.type = Event::FilesDropped;
+
+            // https://stackoverflow.com/questions/43823771/passing-wparam-into-dragqueryfile-not-compatible //
+            auto const drop_handle{ reinterpret_cast<::HDROP>(wParam) };
+            auto const dropped_files_count
+            {
+                ::DragQueryFileW(drop_handle, 0xFFFFFFFF, nullptr, 0)
+            };
+            ::std::vector< wchar_t > buffer;
+            for (::UINT dropped_file_index{ 0 }; dropped_files_count != dropped_file_index; ++dropped_file_index)
+            {
+                auto const file_path_symbols_count_excluding_terminating_null
+                {
+                    ::DragQueryFileW(drop_handle, dropped_file_index, nullptr, 0)
+                };
+                if (0 < file_path_symbols_count_excluding_terminating_null)
+                {
+                    auto const buffer_size{ file_path_symbols_count_excluding_terminating_null + 1 };
+                    buffer.resize(buffer_size);
+                    auto const copied_symbols_count_excluding_terminating_null
+                    {
+                        ::DragQueryFileW(drop_handle, dropped_file_index, buffer.data(), buffer_size)
+                    };
+                    if (copied_symbols_count_excluding_terminating_null == file_path_symbols_count_excluding_terminating_null)
+                    {
+                        buffer.back() = L'\0'; // just in case....
+                        // buffer now contains file path...
+
+                        std::string pathString = std::string(CW2A(buffer.data()));
+                        if (!(GetFileAttributes(buffer.data()) & FILE_ATTRIBUTE_DIRECTORY)) // is not a folder
+                            event.filesDropped.push_back(pathString);
+                        else
+                            event.foldersDropped.push_back(pathString);
+                    }
+                }
+            }
+            //-----------------------------------------------------------------------------------------------//
+
+            pushEvent(event);
             break;
         }
     }

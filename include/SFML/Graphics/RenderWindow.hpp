@@ -73,7 +73,8 @@ public:
     RenderWindow(VideoMode              mode,
                  const String&          title,
                  std::uint32_t          style    = Style::Default,
-                 const ContextSettings& settings = ContextSettings());
+                 const ContextSettings& settings = ContextSettings(),
+                 bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control

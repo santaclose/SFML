@@ -31,6 +31,7 @@
 #include <SFML/Window/Win32/ClipboardImpl.hpp>
 
 #include <ostream>
+#include <iostream>
 
 
 namespace sf::priv
