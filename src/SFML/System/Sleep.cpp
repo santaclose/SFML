@@ -47,4 +47,9 @@ void sleep(Time duration)
         priv::sleepImpl(duration);
 }
 
+void sleepUntilEvent()
+{
+    priv::sleepUntilEventImpl();
+}
+
 } // namespace sf

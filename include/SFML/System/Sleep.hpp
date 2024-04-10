@@ -53,5 +53,6 @@ class Time;
 ///
 ////////////////////////////////////////////////////////////
 void SFML_SYSTEM_API sleep(Time duration);
+void SFML_SYSTEM_API sleepUntilEvent();
 
 } // namespace sf

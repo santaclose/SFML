@@ -54,4 +54,8 @@ void sleepImpl(Time time)
     timeEndPeriod(periodMin);
 }
 
+void sleepUntilEventImpl()
+{
+    WaitMessage();
+}
 } // namespace sf::priv
