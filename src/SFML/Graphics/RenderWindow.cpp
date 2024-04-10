@@ -37,10 +37,10 @@
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-RenderWindow::RenderWindow(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings)
+RenderWindow::RenderWindow(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings, bool acceptFiles)
 {
     // Don't call the base class constructor because it contains virtual function calls
-    Window::create(mode, title, style, state, settings);
+    Window::create(mode, title, style, state, settings, acceptFiles);
 }
 
 
