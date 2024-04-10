@@ -90,9 +90,9 @@ namespace priv
 {
 
 ////////////////////////////////////////////////////////////
-WindowImpl* WindowImpl::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings)
+WindowImpl* WindowImpl::create(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles)
 {
-    return new WindowImplType(mode, title, style, settings);
+    return new WindowImplType(mode, title, style, settings, acceptFiles);
 }
 
 

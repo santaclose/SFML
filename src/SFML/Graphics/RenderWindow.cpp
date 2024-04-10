@@ -42,11 +42,11 @@ m_defaultFrameBuffer(0)
 
 
 ////////////////////////////////////////////////////////////
-RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings) :
+RenderWindow::RenderWindow(VideoMode mode, const String& title, Uint32 style, const ContextSettings& settings, bool acceptFiles) :
 m_defaultFrameBuffer(0)
 {
     // Don't call the base class constructor because it contains virtual function calls
-    Window::create(mode, title, style, settings);
+    Window::create(mode, title, style, settings, acceptFiles);
 }
 
 

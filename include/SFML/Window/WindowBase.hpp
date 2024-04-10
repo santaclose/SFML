@@ -110,7 +110,7 @@ public:
     /// \param style %Window style, a bitwise OR combination of sf::Style enumerators
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default);
+    virtual void create(VideoMode mode, const String& title, Uint32 style = Style::Default, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window from an existing control
