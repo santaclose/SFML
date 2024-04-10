@@ -286,7 +286,7 @@ bool Texture::loadFromStream(InputStream& stream, const IntRect& area)
 
 
 ////////////////////////////////////////////////////////////
-bool Texture::loadFromImage(const Image& image, const IntRect& area)
+bool Texture::loadFromImage(const Image& image, const IntRect& area, bool generateMipmap)
 {
     // Retrieve the image size
     const auto [width, height] = Vector2i(image.getSize());
@@ -299,6 +299,9 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area)
         if (create(image.getSize()))
         {
             update(image);
+
+            if (generateMipmap)
+                this->generateMipmap();
 
             return true;
         }
@@ -341,6 +344,9 @@ bool Texture::loadFromImage(const Image& image, const IntRect& area)
             // Force an OpenGL flush, so that the texture will appear updated
             // in all contexts immediately (solves problems in multi-threaded apps)
             glCheck(glFlush());
+
+            if (generateMipmap)
+                this->generateMipmap();
 
             return true;
         }

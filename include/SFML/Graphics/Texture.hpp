@@ -229,7 +229,7 @@ public:
     /// \see loadFromFile, loadFromMemory
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool loadFromImage(const Image& image, const IntRect& area = IntRect());
+    [[nodiscard]] bool loadFromImage(const Image& image, const IntRect& area = IntRect(), bool generateMipmap = true);
 
     ////////////////////////////////////////////////////////////
     /// \brief Return the size of the texture
