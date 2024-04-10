@@ -377,7 +377,7 @@ public:
     /// \see `loadFromFile`, `loadFromMemory`
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool loadFromImage(const Image& image, bool sRgb = false, const IntRect& area = {});
+    [[nodiscard]] bool loadFromImage(const Image& image, bool sRgb = false, const IntRect& area = {}, bool generateMipmap = true);
 
     ////////////////////////////////////////////////////////////
     /// \brief Return the size of the texture

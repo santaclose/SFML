@@ -373,7 +373,7 @@ bool Texture::loadFromStream(InputStream& stream, bool sRgb, const IntRect& area
 
 
 ////////////////////////////////////////////////////////////
-bool Texture::loadFromImage(const Image& image, bool sRgb, const IntRect& area)
+bool Texture::loadFromImage(const Image& image, bool sRgb, const IntRect& area, bool generateMipmap)
 {
     // Retrieve the image size
     const auto size = Vector2i(image.getSize());
@@ -386,6 +386,10 @@ bool Texture::loadFromImage(const Image& image, bool sRgb, const IntRect& area)
         if (resize(image.getSize(), sRgb))
         {
             update(image);
+
+            if (generateMipmap)
+                this->generateMipmap();
+
             return true;
         }
 
@@ -417,6 +421,9 @@ bool Texture::loadFromImage(const Image& image, bool sRgb, const IntRect& area)
         {
             glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, i, rectangle.size.x, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
             pixels += 4 * size.x;
+
+            if (generateMipmap)
+                this->generateMipmap();
         }
 
         glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
