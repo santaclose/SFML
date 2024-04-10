@@ -152,6 +152,9 @@ WindowImplWin32::WindowImplWin32(WindowHandle handle) : m_handle(handle)
 
 
 ////////////////////////////////////////////////////////////
+typedef HRESULT(WINAPI* PFN_DwmSetWindowAttribute)(HWND, DWORD, LPCVOID, DWORD);
+static void*                     dwmapiDll             = NULL;
+static PFN_DwmSetWindowAttribute DwmSetWindowAttribute = NULL;
 WindowImplWin32::WindowImplWin32(VideoMode     mode,
                                  const String& title,
                                  std::uint32_t style,
@@ -212,6 +215,40 @@ m_cursorGrabbed(m_fullscreen)
                              nullptr,
                              GetModuleHandle(nullptr),
                              this);
+
+    // Set dark theme if enabled
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+#define DWMWA_USE_IMMERSIVE_DARK_MODE 20
+#endif
+    BOOL           success     = FALSE;
+    HKEY           hRootKey    = HKEY_CURRENT_USER;
+    const wchar_t* lpSubKey    = L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
+    const wchar_t* lpValueName = L"AppsUseLightTheme";
+    DWORD          result = 0;
+    {
+        HKEY hKey = 0;
+        if (RegOpenKeyExW(hRootKey, lpSubKey, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+        {
+            DWORD dwBufferSize = sizeof(DWORD);
+            DWORD dwData       = 0;
+            if (RegQueryValueExW(hKey, lpValueName, 0, NULL, (LPBYTE)(&dwData), &dwBufferSize) == ERROR_SUCCESS)
+            {
+                result  = dwData;
+                success = TRUE;
+            }
+            RegCloseKey(hKey);
+        }
+    }
+    BOOL should_use_dark_mode = !success || result == 0;
+    if (DwmSetWindowAttribute == NULL && dwmapiDll == NULL)
+    {
+        dwmapiDll = LoadLibraryA("dwmapi.dll");
+        if (dwmapiDll != 0)
+            DwmSetWindowAttribute = (PFN_DwmSetWindowAttribute)GetProcAddress((HMODULE)dwmapiDll,
+                                                                              "DwmSetWindowAttribute");
+    }
+    if (DwmSetWindowAttribute != NULL)
+        DwmSetWindowAttribute(m_handle, DWMWA_USE_IMMERSIVE_DARK_MODE, &should_use_dark_mode, sizeof(should_use_dark_mode));
 
     // Register to receive device interface change notifications (used for joystick connection handling)
     DEV_BROADCAST_DEVICEINTERFACE deviceInterface =
