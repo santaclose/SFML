@@ -27,6 +27,8 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <vector>
+
 #include <SFML/Config.hpp>
 
 #include <SFML/Window/Joystick.hpp>
@@ -195,6 +197,7 @@ struct Event
         TouchMoved,             //!< A touch moved (data in event.touch)
         TouchEnded,             //!< A touch event ended (data in event.touch)
         SensorChanged,          //!< A sensor value changed (data in event.sensor)
+        FilesDropped,           //!< Files were dropped into the window (data in event.filesDropped and event.foldersDropped)
 
         Count //!< Keep last -- the total number of event types
     };
@@ -203,6 +206,8 @@ struct Event
     // Member data
     ////////////////////////////////////////////////////////////
     EventType type{}; //!< Type of the event
+    std::vector<std::string> filesDropped;
+    std::vector<std::string> foldersDropped;
 
     union
     {
@@ -218,6 +223,7 @@ struct Event
         TouchEvent  touch;  //!< Touch events parameters (Event::TouchBegan, Event::TouchMoved, Event::TouchEnded)
         SensorEvent sensor; //!< Sensor event parameters (Event::SensorChanged)
     };
+
 };
 
 } // namespace sf

@@ -90,12 +90,12 @@ WindowBase::~WindowBase()
 
 
 ////////////////////////////////////////////////////////////
-void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style, State state)
+void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style, State state, bool acceptFiles)
 {
     WindowBase::create(mode, style, state);
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(mode, title, style, state, ContextSettings(0, 0, 0, 0, 0, 0xFFFFFFFF, false));
+    m_impl = priv::WindowImpl::create(mode, title, style, state, ContextSettings(0, 0, 0, 0, 0, 0xFFFFFFFF, false), acceptFiles);
 
     // Perform common initializations
     initialize();

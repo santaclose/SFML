@@ -106,7 +106,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    RenderWindow(VideoMode mode, const String& title, State state, const ContextSettings& settings = ContextSettings());
+    RenderWindow(VideoMode mode, const String& title, State state, const ContextSettings& settings = ContextSettings(), bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
