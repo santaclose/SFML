@@ -178,7 +178,6 @@ void RenderTexture::display()
 
         // Update the target texture
         m_impl->updateTexture(m_texture.m_texture);
-        m_texture.m_pixelsFlipped = true;
         m_texture.invalidateMipmap();
     }
 }
