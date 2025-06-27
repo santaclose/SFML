@@ -89,7 +89,8 @@ public:
            const String&          title,
            std::uint32_t          style    = Style::Default,
            State                  state    = State::Windowed,
-           const ContextSettings& settings = {});
+           const ContextSettings& settings = {},
+           bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct a new window
@@ -108,7 +109,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    Window(VideoMode mode, const String& title, State state, const ContextSettings& settings = {});
+    Window(VideoMode mode, const String& title, State state, const ContextSettings& settings = {}, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control
@@ -171,7 +172,7 @@ public:
     /// \param state    %Window state
     ///
     ////////////////////////////////////////////////////////////
-    void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default, State state = State::Windowed) override;
+    void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default, State state = State::Windowed, bool acceptFiles = false) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window
@@ -190,7 +191,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings);
+    virtual void create(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window

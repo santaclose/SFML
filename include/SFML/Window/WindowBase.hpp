@@ -155,7 +155,7 @@ public:
     /// \param state %Window state
     ///
     ////////////////////////////////////////////////////////////
-    virtual void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default, State state = State::Windowed);
+    virtual void create(VideoMode mode, const String& title, std::uint32_t style = Style::Default, State state = State::Windowed, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create (or recreate) the window

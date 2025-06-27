@@ -42,16 +42,16 @@ Window::Window() = default;
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings)
+Window::Window(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings, bool acceptFiles)
 {
-    Window::create(mode, title, style, state, settings);
+    Window::create(mode, title, style, state, settings, acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-Window::Window(VideoMode mode, const String& title, State state, const ContextSettings& settings)
+Window::Window(VideoMode mode, const String& title, State state, const ContextSettings& settings, bool acceptFiles)
 {
-    Window::create(mode, title, sf::Style::Default, state, settings);
+    Window::create(mode, title, sf::Style::Default, state, settings, acceptFiles);
 }
 
 
@@ -75,20 +75,20 @@ Window& Window::operator=(Window&&) noexcept = default;
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, std::uint32_t style, State state)
+void Window::create(VideoMode mode, const String& title, std::uint32_t style, State state, bool acceptFiles)
 {
-    Window::create(mode, title, style, state, ContextSettings{});
+    Window::create(mode, title, style, state, ContextSettings{}, acceptFiles);
 }
 
 
 ////////////////////////////////////////////////////////////
-void Window::create(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings)
+void Window::create(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings, bool acceptFiles)
 {
     // Ensure the open window is closed first
     close();
 
     // Recreate the window implementation
-    m_impl = priv::WindowImpl::create(mode, title, style, state, settings);
+    m_impl = priv::WindowImpl::create(mode, title, style, state, settings, acceptFiles);
 
     // Recreate the context
     m_context = priv::GlContext::create(settings, *m_impl, mode.bitsPerPixel);

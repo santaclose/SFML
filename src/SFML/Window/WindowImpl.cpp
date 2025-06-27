@@ -118,7 +118,8 @@ std::unique_ptr<WindowImpl> WindowImpl::create(
     const String&          title,
     std::uint32_t          style,
     State                  state,
-    const ContextSettings& settings)
+    const ContextSettings& settings,
+    bool                   acceptFiles)
 {
     // Fullscreen style requires some tests
     if (state == State::Fullscreen)
@@ -151,7 +152,7 @@ std::unique_ptr<WindowImpl> WindowImpl::create(
         style |= Style::Titlebar;
 #endif
 
-    auto windowImpl = std::make_unique<WindowImplType>(mode, title, style, state, settings);
+    auto windowImpl = std::make_unique<WindowImplType>(mode, title, style, state, settings, acceptFiles);
     if (state == State::Fullscreen)
         WindowImplImpl::fullscreenWindow = windowImpl.get();
     return windowImpl;

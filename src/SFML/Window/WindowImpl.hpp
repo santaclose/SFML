@@ -82,7 +82,8 @@ public:
                                               const String&          title,
                                               std::uint32_t          style,
                                               State                  state,
-                                              const ContextSettings& settings);
+                                              const ContextSettings& settings,
+                                              bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Create a new window depending on to the current OS

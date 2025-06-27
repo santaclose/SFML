@@ -87,7 +87,8 @@ public:
                  const String&          title,
                  std::uint32_t          style    = Style::Default,
                  State                  state    = State::Windowed,
-                 const ContextSettings& settings = {});
+                 const ContextSettings& settings = {},
+                 bool                   acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct a new window
@@ -106,7 +107,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    RenderWindow(VideoMode mode, const String& title, State state, const ContextSettings& settings = {});
+    RenderWindow(VideoMode mode, const String& title, State state, const ContextSettings& settings = {}, bool acceptFiles = false);
 
     ////////////////////////////////////////////////////////////
     /// \brief Construct the window from an existing control

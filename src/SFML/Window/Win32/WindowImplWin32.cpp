@@ -43,6 +43,10 @@
 
 #include <cstddef>
 #include <cstring>
+#include <iostream>
+#include <string>
+#include <atlstr.h>
+#include <shellapi.h>
 
 // MinGW lacks the definition of some Win32 constants
 #ifndef XBUTTON1
@@ -170,7 +174,8 @@ WindowImplWin32::WindowImplWin32(VideoMode     mode,
                                  const String& title,
                                  std::uint32_t style,
                                  State         state,
-                                 const ContextSettings& /*settings*/) :
+                                 const ContextSettings& /*settings*/,
+                                 bool acceptFiles) :
 m_lastSize(mode.size),
 m_fullscreen(state == State::Fullscreen),
 m_cursorGrabbed(m_fullscreen)
@@ -215,17 +220,18 @@ m_cursorGrabbed(m_fullscreen)
     }
 
     // Create the window
-    m_handle = CreateWindowW(className,
-                             reinterpret_cast<const wchar_t*>(title.toUtf16().c_str()),
-                             win32Style,
-                             left,
-                             top,
-                             width,
-                             height,
-                             nullptr,
-                             nullptr,
-                             GetModuleHandle(nullptr),
-                             this);
+    m_handle = CreateWindowExW(acceptFiles ? WS_EX_ACCEPTFILES : 0L,
+                               className,
+                               reinterpret_cast<const wchar_t*>(title.toUtf16().c_str()),
+                               win32Style,
+                               left,
+                               top,
+                               width,
+                               height,
+                               nullptr,
+                               nullptr,
+                               GetModuleHandle(nullptr),
+                               this);
 
     // Set dark theme if enabled
 #ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
@@ -1201,6 +1207,42 @@ void WindowImplWin32::processEvent(UINT message, WPARAM wParam, LPARAM lParam)
             if (shouldResize)
                 SetWindowPos(m_handle, pos.hwndInsertAfter, pos.x, pos.y, pos.cx, pos.cy, 0);
 
+            break;
+        }
+
+        case WM_DROPFILES:
+        {
+            Event event;
+            event.type = Event::FilesDropped;
+
+            // https://stackoverflow.com/questions/43823771/passing-wparam-into-dragqueryfile-not-compatible //
+            const auto             drop_handle{reinterpret_cast<::HDROP>(wParam)};
+            const auto             dropped_files_count{::DragQueryFileW(drop_handle, 0xFFFFFFFF, nullptr, 0)};
+            ::std::vector<wchar_t> buffer;
+            for (::UINT dropped_file_index{0}; dropped_files_count != dropped_file_index; ++dropped_file_index)
+            {
+                const auto file_path_symbols_count_excluding_terminating_null{
+                    ::DragQueryFileW(drop_handle, dropped_file_index, nullptr, 0)};
+                if (0 < file_path_symbols_count_excluding_terminating_null)
+                {
+                    const auto buffer_size{file_path_symbols_count_excluding_terminating_null + 1};
+                    buffer.resize(buffer_size);
+                    const auto copied_symbols_count_excluding_terminating_null{
+                        ::DragQueryFileW(drop_handle, dropped_file_index, buffer.data(), buffer_size)};
+                    if (copied_symbols_count_excluding_terminating_null == file_path_symbols_count_excluding_terminating_null)
+                    {
+                        buffer.back() = L'\0'; // just in case....
+                        // buffer now contains file path...
+
+                        std::string pathString(CW2A(buffer.data()));
+                        if (!(GetFileAttributes(buffer.data()) & FILE_ATTRIBUTE_DIRECTORY)) // is not a folder
+                            event.filesDropped.push_back(pathString);
+                        else
+                            event.foldersDropped.push_back(pathString);
+                    }
+                }
+            }
+            pushEvent(event);
             break;
         }
     }

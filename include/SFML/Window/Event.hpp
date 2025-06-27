@@ -27,6 +27,10 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
+#include <vector>
+
+// #include <SFML/Config.hpp>
+
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
@@ -387,8 +391,11 @@ private:
                  TouchBegan,
                  TouchMoved,
                  TouchEnded,
-                 SensorChanged>
+                 SensorChanged,
+                 FilesDropped>
         m_data; //!< Event data
+    std::vector<std::string> filesDropped;
+    std::vector<std::string> foldersDropped;
 
     ////////////////////////////////////////////////////////////
     // Helper functions
@@ -412,6 +419,7 @@ private:
 
     template <typename Handler>
     static constexpr bool isEventHandler = isInvocableWithEventSubtype<Handler>(decltype (&m_data)(nullptr));
+
 };
 
 } // namespace sf

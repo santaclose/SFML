@@ -82,7 +82,7 @@ WindowBase& WindowBase::operator=(WindowBase&&) noexcept = default;
 
 
 ////////////////////////////////////////////////////////////
-void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style, State state)
+void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style, State state, bool acceptFiles)
 {
     // Recreate the window implementation
     m_impl = priv::WindowImpl::create(mode,
@@ -95,7 +95,8 @@ void WindowBase::create(VideoMode mode, const String& title, std::uint32_t style
                                                       /* majorVersion */ 0,
                                                       /* minorVersion */ 0,
                                                       /* attributeFlags */ 0xFFFFFFFF,
-                                                      /* sRgbCapable */ false});
+                                                      /* sRgbCapable */ false},
+                                      acceptFiles);
 
     // Perform common initializations
     initialize();
