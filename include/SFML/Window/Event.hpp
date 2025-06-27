@@ -299,6 +299,12 @@ public:
         Vector3f     value;  //!< Current value of the sensor on the X, Y, and Z axes
     };
 
+    struct FilesDropped
+    {
+        std::vector<std::string> filesDropped;
+        std::vector<std::string> foldersDropped;
+    };
+
     ////////////////////////////////////////////////////////////
     /// \brief Construct from a given `sf::Event` subtype
     ///
@@ -394,8 +400,6 @@ private:
                  SensorChanged,
                  FilesDropped>
         m_data; //!< Event data
-    std::vector<std::string> filesDropped;
-    std::vector<std::string> foldersDropped;
 
     ////////////////////////////////////////////////////////////
     // Helper functions

@@ -1212,8 +1212,7 @@ void WindowImplWin32::processEvent(UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_DROPFILES:
         {
-            Event event;
-            event.type = Event::FilesDropped;
+            Event::FilesDropped event;
 
             // https://stackoverflow.com/questions/43823771/passing-wparam-into-dragqueryfile-not-compatible //
             const auto             drop_handle{reinterpret_cast<::HDROP>(wParam)};
