@@ -64,7 +64,7 @@ public:
     /// \param settings Additional settings for the underlying OpenGL context
     ///
     ////////////////////////////////////////////////////////////
-    WindowImplX11(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings);
+    WindowImplX11(VideoMode mode, const String& title, std::uint32_t style, State state, const ContextSettings& settings, bool acceptFiles);
 
     ////////////////////////////////////////////////////////////
     /// \brief Destructor
