@@ -207,6 +207,40 @@ void Window::display()
     }
 }
 
+void Window::waitEventMultiWindow(const std::vector<Window*>& windows)
+{
+    bool there_are_events = false;
+    for (Window* window : windows)
+    {
+        if (!window->m_impl->m_events.empty())
+        {
+            there_are_events = true;
+            break;
+        }
+    }
+
+    if (!there_are_events)
+        for (Window* window : windows)
+            window->m_impl->populateEventQueue();
+
+    while (!there_are_events)
+    {
+        sleep(milliseconds(10));
+        for (Window* window : windows)
+            window->m_impl->populateEventQueue();
+
+        there_are_events = false;
+        for (Window* window : windows)
+        {
+            if (!window->m_impl->m_events.empty())
+            {
+                there_are_events = true;
+                break;
+            }
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////
 void Window::initialize()

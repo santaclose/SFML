@@ -339,6 +339,8 @@ public:
     ////////////////////////////////////////////////////////////
     void display();
 
+    static void waitEventMultiWindow(const std::vector<Window*>& windows);
+
 private:
     ////////////////////////////////////////////////////////////
     /// \brief Perform some common internal initializations

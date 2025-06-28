@@ -250,7 +250,6 @@ std::optional<Event> WindowImpl::waitEvent(Time timeout)
     return popEvent();
 }
 
-
 ////////////////////////////////////////////////////////////
 std::optional<Event> WindowImpl::pollEvent()
 {

@@ -352,6 +352,7 @@ private:
     ////////////////////////////////////////////////////////////
     void processSensorEvents();
 
+public:
     ////////////////////////////////////////////////////////////
     /// \brief Read joystick, sensors, and OS state and populate event queue
     ///
@@ -362,6 +363,7 @@ private:
     // Member data
     ////////////////////////////////////////////////////////////
     std::queue<Event>                                m_events;             //!< Queue of available events
+private:
     std::unique_ptr<JoystickStatesImpl>              m_joystickStatesImpl; //!< Previous state of the joysticks (PImpl)
     EnumArray<Sensor::Type, Vector3f, Sensor::Count> m_sensorValue;        //!< Previous value of the sensors
     float m_joystickThreshold{0.1f}; //!< Joystick threshold (minimum motion for "move" event to be generated)
