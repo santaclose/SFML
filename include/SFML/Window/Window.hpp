@@ -339,6 +339,15 @@ public:
     ////////////////////////////////////////////////////////////
     void display();
 
+    ////////////////////////////////////////////////////////////
+    /// \brief Wait for events in any of the provided windows
+    ///
+    /// Like waitEvent, but allowing events in more than one window.
+    /// Useful for putting threads to sleep.
+    ///
+    ////////////////////////////////////////////////////////////
+    static void waitEventMultiWindow(Window** windows, unsigned int windowCount);
+
 private:
     ////////////////////////////////////////////////////////////
     /// \brief Perform some common internal initializations

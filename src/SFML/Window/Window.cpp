@@ -207,6 +207,50 @@ void Window::display()
     }
 }
 
+void Window::waitEventMultiWindow(Window** windows, unsigned int windowCount)
+{
+    bool there_are_events = false;
+    for (unsigned int i = 0; i < windowCount; i++)
+    {
+        Window* window = windows[i];
+        if (!window->m_impl->m_events.empty())
+        {
+            there_are_events = true;
+            break;
+        }
+    }
+
+    if (!there_are_events)
+    {
+        for (unsigned int i = 0; i < windowCount; i++)
+        {
+            Window* window = windows[i];
+            window->m_impl->populateEventQueue();
+        }
+    }
+
+    while (!there_are_events)
+    {
+        sleep(milliseconds(10));
+        for (unsigned int i = 0; i < windowCount; i++)
+        {
+            Window* window = windows[i];
+            window->m_impl->populateEventQueue();
+        }
+
+        there_are_events = false;
+        for (unsigned int i = 0; i < windowCount; i++)
+        {
+            Window* window = windows[i];
+            if (!window->m_impl->m_events.empty())
+            {
+                there_are_events = true;
+                break;
+            }
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////
 void Window::initialize()
